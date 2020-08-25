@@ -1,0 +1,314 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+// @import "~@ionic/angular/css/padding.css";
+// @import "~@ionic/angular/css/float-elements.css";
+// @import "~@ionic/angular/css/text-alignment.css";
+// @import "~@ionic/angular/css/text-transformation.css";
+// @import "~@ionic/angular/css/flex-utils.css";
+
+@font-face {
+  font-family: "futuraBlack";
+  src: url('./assets/unicode.futurab.ttf') format('truetype');
+}
+
+html {
+  background-image: url(./assets/background.jpg);
+  background-position: center;
+  background-size: contain;
+}
+
+ion-item {
+  --border-width: 0;
+  --inner-border-width: 0;
+}
+ion-card {
+  padding: 10px 0;
+}
+ion-title {
+  font-weight: bold;
+  text-align: center;
+  padding: 0;
+}
+ion-title h1 {
+  text-align: center;
+}
+ion-label h2 {
+  font-size: 1.25em !important;
+  border: none !important;
+  padding: 10px;
+}
+ion-card ion-list.listContainer ion-item {
+  border-bottom: 1px solid #eee;
+}
+ion-list.listContainer div:first-child {
+  border-top: none;
+}
+.ion-page {
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 3px 0px 8px rgba(0,0,0,0.5);
+}
+ion-note {
+  font-size: 1em;
+}
+ion-header ion-toolbar {
+  min-height: 80px;
+}
+ion-item-sliding {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+.account-info ion-input {
+  margin-top: 10px;
+  text-align: right;
+}
+ion-button {
+  margin: 10px;
+}
+ion-segment {
+  width: calc(100% + 10px);
+  margin-left: -5px;
+}
+ion-segment-button {
+  background: #eee;
+  --border-width:0px;
+  --indicator-color-checked: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+ion-segment-button.segment-button-checked {
+  background: #fff;
+  --border-width:0px;
+  --indicator-color-checked: 0;   
+}
+ion-button.fullWidth {
+  width: calc(100% - 20px);
+}
+.statusHeader {
+  background-color: #000;
+  background-image: url(./assets/header.png);
+  background-position: center;
+  background-size: cover;
+  min-height: 150px;
+}
+.statusBar {
+  width: 95%;
+  border-bottom: 3px solid #fff;
+  padding: 20px 0;
+  margin: 0 auto 60px;
+  position: relative;
+}
+.statusBar .milestone {
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  background-color: #fff;
+  position: absolute;
+  top: 34px;
+}
+.statusBar .milestone:after {
+  content: '';
+  line-height: 0.8em;
+  color: #fff;
+  font-size: 13px;
+  display: block;
+  width: 60px;
+  left: -20px;
+  line-height: 1.25em;
+  position: absolute;
+  top: 2em;
+  text-align: center;
+}
+.step1 {
+  left: 10%;
+}
+.step2 {
+  left: 30%;
+}
+.step3 {
+  left: 50%;
+}
+.step4 {
+  left: 70%;
+}
+.step5 {
+  left: 90%;
+}
+.statusBar .milestone.step1:after {
+  content: 'Start'
+}
+.statusBar .milestone.step2:after {
+  content: 'Waiting to Order'
+}
+.statusBar .milestone.step3:after {
+  content: 'Ready to Order'
+}
+.statusBar .milestone.step4:after {
+  content: 'Order In Progress'
+}
+.statusBar .milestone.step5:after {
+  content: 'Order Ready'
+}
+.statusBar #currentStatus {
+  background-image: url('./assets/currentStatus_green.gif');
+  background-size: cover;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  top: 5px;
+  margin-left: -29px;
+}
+.statusBar #currentStatus.on-hold {
+  background-image: url('./assets/currentStatus_red.gif');
+}
+.spacer {
+  display:block;
+  width: 100%;
+  height: 3em;
+}
+p {
+  padding: 10px;
+  margin: 0;
+}
+.topBar {
+  min-height: 60px;
+  background: #fff;
+}
+#nameInput {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: -0.5em;
+}
+.list-md {
+  padding: 0;
+}
+.qrMessage {
+  display:none;
+}
+.qrcode img {
+  display: block;
+  margin: 0 auto;
+  width: 250px !important;
+}
+#qrIMG {
+  opacity: 0.2;
+}
+.appLogo {
+  max-width: 40px;
+  left: 10px;
+  z-index: 999;
+  position: absolute;
+  top: 15px;
+}
+.restaurantLogo {
+  max-width: 45px;
+  max-height: 45px;
+  position: absolute;
+  right: 10px;
+  z-index: 999999;
+  top: 10px;
+}
+.account-info ion-item {
+  border-bottom: 1px solid #ddd;
+}
+.myOrder {
+  border-left: 5px solid #2dd36f !important;
+}
+.myNumberCard {
+  text-align: center;
+}
+.myNumberCard h3 {
+  font-size: 1em;
+}
+.myNumberCard h1 {
+  font-size: 15em;
+  font-weight: bold;
+  line-height: 0.8em;
+}
+.myNumberCard h2 {
+  font-size: 3em;
+  line-height: 0.8em;
+}
+.myNumberCard .name {
+  line-height: 1.25em;
+}
+.hide {
+  display:none;
+}
+.readyToOrderNotice, .completeNotice {
+  position: absolute;
+  z-index: 999;
+  width: 80%;
+  min-height: 250px;
+  background: #fff;
+  left: 10%;
+  top: 30%;
+}
+.readyToOrderNotice h3, .completeNotice h3 {
+  font-size: 3em;
+  font-weight: bold;
+  line-height: 1em;
+  text-align: center;
+  margin-bottom: 1em;
+  padding: 0 20px;
+}
+.socialIcons img {
+  width: 40px;
+  float:left;
+  margin-right: 10px;
+}
+.menu ion-card {
+  margin-bottom: 3em;
+  padding: 0;
+}
+.menu h4 {
+  padding: 0;
+  margin-top: 0px;
+  color: #444;
+  font-size: 2em;
+  font-family: 'futuraBlack', sans-serif;
+  margin-bottom: 0;
+}
+.menu ul {
+  margin-top: 0;
+  font-weight: bold;
+}
+.menu p:first-child{
+  border-top: none;
+}
+.menu p {
+  font-weight: bold;
+  font-size: 1.2em;
+  border-top: 1px solid #ddd;
+}
+.menu span {
+  font-weight: normal;
+  font-size: 0.75em;
+}
+.menu span.price {
+  float:right;
+  min-height: 5em;
+  padding: 10px;
+  font-weight: bold;
+}

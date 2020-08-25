@@ -1,0 +1,15 @@
+<ion-header class="topBar">
+  <img class="appLogo" src="../../assets/takeANumber.png" start />
+  <ion-title>
+    {{restaurantName}} Menu
+  </ion-title>
+  <img class="restaurantLogo" src="{{restaurantLogo}}" end />
+</ion-header>
+
+<ion-content [fullscreen]="true" padding>
+  <div class="menu" id="top">
+  <ion-card>
+    <img *ngIf="menu" src="{{menu}}"/>
+  </ion-card>
+</div>
+</ion-content>

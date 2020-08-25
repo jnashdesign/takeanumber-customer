@@ -1,0 +1,143 @@
+<div class="readyToOrderNotice hide">
+  <ion-card>
+  <h3>{{name}}, we are ready to take your order!</h3>
+  <ion-button expand="full" (click)="dismiss()" color="success">
+    Got it!
+  </ion-button>
+</ion-card>
+</div>
+<div class="completeNotice hide">
+  <ion-card>
+  <h3>{{name}}, your order is ready!</h3>
+  <ion-button expand="full" (click)="dismiss()" color="success">
+    Got it!
+  </ion-button>
+</ion-card>
+</div>
+<ion-header class="topBar">
+  <img class="appLogo" src="../../assets/takeANumber.png" start />
+  <ion-title>
+    My Status
+  </ion-title>
+  <img class="restaurantLogo" src="{{restaurantLogo}}" end />
+</ion-header>
+<ion-header class="statusHeader">
+  <div class="statusBar">
+    <div class="milestone step1"></div>
+    <div class="milestone step2"></div>
+    <div class="milestone step3"></div>
+    <div class="milestone step4"></div>
+    <div class="milestone step5"></div>
+    <div id="currentStatus" class="step1"></div>
+  </div>
+  <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="myNumber" checked>
+      <ion-label>My Number</ion-label>
+      <ion-icon name="duplicate"></ion-icon>
+    </ion-segment-button>
+
+    <ion-segment-button value="waiting" id="waitingListSegment">
+      <ion-label>Waiting ({{waitingCustomers}})</ion-label>
+      <ion-icon name="list"></ion-icon>
+    </ion-segment-button>
+
+    <ion-segment-button value="in-progress" id="inProgressOrderSegment">
+      <ion-label>In Progress ({{inProgressOrders}})</ion-label>
+      <ion-icon name="list"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content padding [fullscreen]="true">
+  <div [ngSwitch]="tab">
+    <ion-card *ngSwitchCase="'waiting'" class="waitingTab">
+      <ion-item *ngIf="waitingCustomers < 1">
+        <ion-label>
+          <h2>No Waiting Customers.</h2>
+        </ion-label>
+      </ion-item>
+      
+      <ion-list class="listContainer waitingList" *ngFor="let item of itemList | async">
+        <div *ngIf="item.status == 'waiting'">
+          <ion-item>
+            <ion-label id="item-{{item.timeStamp}}">
+              <div *ngIf="item.timeStamp == timeStamp; else notMine">
+              <h2 class="myOrder">{{item.id}} &mdash; {{item.name}}</h2>
+            </div>
+            <ng-template #notMine>
+              <h2>{{item.id}} &mdash; {{item.name}}</h2>
+            </ng-template>        
+            </ion-label>
+            <ion-note slot="end">
+              {{item.time}}
+            </ion-note>
+          </ion-item>
+        </div>
+      </ion-list>
+    </ion-card>
+
+    <ion-card *ngSwitchCase="'in-progress'" class="inProgressTab">
+      <ion-item *ngIf="inProgressOrders < 1">
+        <ion-label>
+          <h2>No In Progress Orders.</h2>
+        </ion-label>
+      </ion-item>
+
+    <ion-list class="listContainer inProgressList" *ngFor="let item of itemList | async">
+      <div *ngIf="item.status == 'in-progress'">
+        <ion-item>
+          <ion-label id="item-{{item.timeStamp}}">
+            <div *ngIf="item.timeStamp == timeStamp; else notMine">
+              <h2 class="myOrder">{{item.id}} &mdash; {{item.name}}</h2>
+            </div>
+            <ng-template #notMine>
+              <h2>{{item.id}} &mdash; {{item.name}}</h2>
+            </ng-template>           
+          </ion-label>
+          <ion-note slot="end">
+            {{item.time_gotNumber}}
+          </ion-note>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
+
+
+    <ion-card *ngSwitchCase="'myNumber'">
+      <div class="needANumber" *ngIf="!timeStamp">
+        <ion-item>
+          You don't have a number yet.
+        </ion-item>
+        <ion-item>
+          <ion-input id="nameInput" type="text" placeholder="Customer Name" [(ngModel)]="name">
+          </ion-input>
+        </ion-item>
+
+        <ion-button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
+          Reserve A Spot In Line
+        </ion-button>
+      </div>
+
+      <div *ngIf="timeStamp">
+        <div *ngIf="status == 'complete'; else incomplete">
+          <ion-button (click)="getNewNumber()" expand="full">
+            Get a new number
+          </ion-button>
+          <div class="myNumberCard">
+            <h2 class="name">Your order has been completed!</h2>
+          </div>   
+        </div>
+        <ng-template #incomplete>
+          <ion-button (click)="markCancelled()" expand="full">
+            Cancel My Order
+          </ion-button>
+          <div class="myNumberCard">
+            <h2 class="name">{{name}}</h2>
+            <h1 class="myID">{{myID}}</h1>
+            <h3><span class="date">{{date}}</span> | <span class="time">{{time}}</span></h3>
+          </div>  
+        </ng-template>
+      </div>
+    </ion-card>
+  </div>
+</ion-content>

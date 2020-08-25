@@ -1,0 +1,35 @@
+<ion-header class="topBar">
+  <img class="appLogo" src="../../assets/takeANumber.png" start />
+  <ion-title>
+    About {{restaurantName}}
+  </ion-title>
+  <img class="restaurantLogo" src="{{restaurantLogo}}" end />
+</ion-header>
+
+<ion-content class="account-info" [fullscreen]="true" padding>
+  <ion-card padding>
+    <img style="margin:-10px auto 0;display:block;" src="{{restaurantLogo}}"/>
+    <ion-row>
+      <ion-col>
+        <p *ngIf="restaurantSite"><strong>Website</strong><br><a href="{{restaurantSite}}">{{restaurantSite}}</a></p>
+        <p *ngIf="restaurantEmail"><strong>Email</strong><br><a href="mailto:{{restaurantEmail}}">{{restaurantEmail}}</a></p>
+        <p *ngIf="restaurantPhone"><strong>Phone</strong><br>{{restaurantPhone}}</p>
+      </ion-col>
+      <ion-col class="socialIcons" *ngIf="instagram || facebook || twitter">
+        <p><strong>Follow them on:</strong></p>
+        <a *ngIf="facebook" target="_blank" href="http://www.facebook.com/{{facebook}}">
+          <img src="../../assets/social/facebook.png"/>
+        </a>
+        <a *ngIf="instagram" target="_blank" href="http://instagram.com/{{instagram}}">
+          <img src="../../assets/social/instagram-sketched.png"/>
+        </a>
+        <a *ngIf="twitter" target="_blank" href="http://twitter.com/{{instagram}}">
+          <img src="../../assets/social/twitter.png"/>
+        </a>
+      </ion-col>
+    </ion-row>
+    <p *ngIf="description1"><strong>Description:</strong><br>{{description1}}</p>
+    <p *ngIf="description2">{{description2}}</p>
+    <p *ngIf="description3">{{description3}}</p>
+  </ion-card>
+</ion-content>
