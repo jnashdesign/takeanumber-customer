@@ -1,3 +1,11 @@
+<div class="selectRestaurant hide">
+  <ion-list>
+    <ion-card (click)="selectRestaurant(restaurant.client_info.firebaseName)" class="pickRestaurant" *ngFor="let restaurant of restaurants">
+      <img src="{{restaurant.client_info.restaurantLogo}}"/>
+      <p>{{restaurant.client_info.restaurantName}}</p>
+    </ion-card>
+  </ion-list>
+</div>
 <div class="readyToOrderNotice hide">
   <ion-card>
   <h3>{{name}}, we are ready to take your order!</h3>
@@ -15,11 +23,11 @@
 </ion-card>
 </div>
 <ion-header class="topBar">
-  <img class="appLogo" src="../../assets/takeANumber.png" start />
+  <img class="appLogo"  [routerLink]="['/choose-restaurant/']" src="../../assets/hamburger-menu.svg" start />
   <ion-title>
     My Status
   </ion-title>
-  <img class="restaurantLogo" src="{{restaurantLogo}}" end />
+  <img class="restaurantLogo" src="{{restaurantLogo}}" end/>
 </ion-header>
 <ion-header class="statusHeader">
   <div class="statusBar">
@@ -30,6 +38,8 @@
     <div class="milestone step5"></div>
     <div id="currentStatus" class="step1"></div>
   </div>
+</ion-header>
+<ion-header>
   <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)">
     <ion-segment-button value="myNumber" checked>
       <ion-label>My Number</ion-label>
@@ -38,19 +48,19 @@
 
     <ion-segment-button value="waiting" id="waitingListSegment">
       <ion-label>Waiting ({{waitingCustomers}})</ion-label>
-      <ion-icon name="list"></ion-icon>
+      <ion-icon name="alarm"></ion-icon>
     </ion-segment-button>
 
     <ion-segment-button value="in-progress" id="inProgressOrderSegment">
       <ion-label>In Progress ({{inProgressOrders}})</ion-label>
-      <ion-icon name="list"></ion-icon>
+      <ion-icon name="restaurant"></ion-icon>
     </ion-segment-button>
   </ion-segment>
 </ion-header>
 
 <ion-content padding [fullscreen]="true">
   <div [ngSwitch]="tab">
-    <ion-card *ngSwitchCase="'waiting'" class="waitingTab">
+    <div *ngSwitchCase="'waiting'" class="waitingTab">
       <ion-item *ngIf="waitingCustomers < 1">
         <ion-label>
           <h2>No Waiting Customers.</h2>
@@ -74,9 +84,9 @@
           </ion-item>
         </div>
       </ion-list>
-    </ion-card>
+    </div>
 
-    <ion-card *ngSwitchCase="'in-progress'" class="inProgressTab">
+    <div *ngSwitchCase="'in-progress'" class="inProgressTab">
       <ion-item *ngIf="inProgressOrders < 1">
         <ion-label>
           <h2>No In Progress Orders.</h2>
@@ -100,7 +110,7 @@
         </ion-item>
       </div>
     </ion-list>
-  </ion-card>
+  </div>
 
 
     <ion-card *ngSwitchCase="'myNumber'">
@@ -114,7 +124,7 @@
         </ion-item>
 
         <ion-button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
-          Reserve A Spot In Line
+          Reserve My Spot In Line
         </ion-button>
       </div>
 
@@ -128,7 +138,7 @@
           </div>   
         </div>
         <ng-template #incomplete>
-          <ion-button (click)="markCancelled()" expand="full">
+          <ion-button (click)="areYouSure()" expand="full">
             Cancel My Order
           </ion-button>
           <div class="myNumberCard">

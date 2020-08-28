@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
@@ -19,60 +21,74 @@ export class Tab3Page {
   public facebook;
   public instagram;
   public twitter;
+  public firebaseName;
 
   constructor(
-    public afd: AngularFireDatabase) {
-      localStorage.setItem('firebaseName','bellsSweetFactory');
-      this.setData(localStorage.getItem('firebaseName'));
+    public afd: AngularFireDatabase,
+    public router: Router,
+    public plt: Platform) {
+      this.plt.ready().then(() => {
+              this.setData();
+      });
     }
 
-  setData(firebaseName){
-    this.afd.object('restaurants/' + firebaseName + '/client_info')
-    .valueChanges().subscribe((res:any) => {
+    ionViewWillEnter(){
+      if (!localStorage.getItem('firebaseName')){
+        this.router.navigate(['/choose-restaurant']);
+      }else {
+        this.firebaseName = localStorage.getItem('firebaseName');
+      }
+      setTimeout(() => {
+        this.setData();
+       }, 500);
 
+    }
+
+    setData(){
+      console.log('setDataRan');
+
+      console.log(localStorage.getItem('restaurantEmail'))
       // Set the main stuff
-      this.restaurantName = res.restaurantName.replace(/['"]+/g, '');
-      this.restaurantLogo = res.restaurantLogo.replace(/['"]+/g, '');
+      this.restaurantName = localStorage.getItem('restaurantName');
+      this.restaurantLogo = localStorage.getItem('restaurantLogo');
 
       // Check for website
-      if (res.site){
-        this.restaurantSite = res.site.replace(/['"]+/g, '');
+      if (localStorage.getItem('restaurantSite')){
+        this.restaurantSite = localStorage.getItem('restaurantSite');
       }
 
       // Check for phone
-      if (res.phone){
-        this.restaurantPhone = res.phone.replace(/['"]+/g, '');
+      if (localStorage.getItem('restaurantPhone')){
+        this.restaurantPhone = localStorage.getItem('restaurantPhone');
       }
 
       // Check for email
-      if (res.email){
-        this.restaurantEmail  = res.email.replace(/['"]+/g, '');
+      if (localStorage.getItem('restaurantEmail')){
+        this.restaurantEmail  = localStorage.getItem('restaurantEmail');
       }
 
       // Check for 1st paragraph of description     
-      if (res.description1){
-        this.description1 = res.description1.replace(/['"]+/g, ''); 
+      if (localStorage.getItem('description1')){
+        this.description1 = localStorage.getItem('description1'); 
       }
       // Check for 2nd paragraph of description     
-      if (res.description2){
-        this.description2 = res.description2.replace(/['"]+/g, '');  
+      if (localStorage.getItem('description2')){
+        this.description2 = localStorage.getItem('description2');  
       }
       // Check for 3rd paragraph of description
-      if(res.description3){
-        this.description3 = res.description3.replace(/['"]+/g, '');  
+      if(localStorage.getItem('description3')){
+        this.description3 = localStorage.getItem('description3');  
       }
 
       // Check for social links
-      if (res.facebook){
-        this.facebook = res.facebook;
+      if (localStorage.getItem('facebook')){
+        this.facebook = localStorage.getItem('facebook');
       }
-      if (res.instagram){
-        this.instagram = res.instagram;
+      if (localStorage.getItem('instagram')){
+        this.instagram = localStorage.getItem('instagram');
       }
-      if (res.twitter){
-        this.twitter = res.twitter;
+      if (localStorage.getItem('twitter')){
+        this.twitter = localStorage.getItem('twitter');
       }
-    });
-  }
-
+    }
 }

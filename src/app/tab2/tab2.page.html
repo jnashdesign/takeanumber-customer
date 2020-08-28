@@ -1,15 +1,15 @@
 <ion-header class="topBar">
-  <img class="appLogo" src="../../assets/takeANumber.png" start />
+  <img class="appLogo"  [routerLink]="['/choose-restaurant/']" src="../../assets/hamburger-menu.svg" start />
   <ion-title>
     {{restaurantName}} Menu
   </ion-title>
-  <img class="restaurantLogo" src="{{restaurantLogo}}" end />
+  <img class="restaurantLogo" (click)="selectRestaurant()" src="{{restaurantLogo}}" end/>
 </ion-header>
 
 <ion-content [fullscreen]="true" padding>
   <div class="menu" id="top">
-  <ion-card>
-    <img *ngIf="menu" src="{{menu}}"/>
-  </ion-card>
-</div>
+    <ion-card>
+      <img *ngIf="menu" src="{{menu}}"/>
+    </ion-card>
+  </div>
 </ion-content>

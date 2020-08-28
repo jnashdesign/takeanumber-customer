@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Choose A Restaurant <p class="close"  (click)="dismiss()">X</p></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>
+    <ion-list>
+      <div *ngFor="let restaurant of restaurants">
+          <ion-card *ngIf="restaurant.client_info.firebaseName !== 'demo'" (click)="selectRestaurant($event, restaurant.client_info.firebaseName, restaurant.client_info.restaurantLogo)" class="pickRestaurant">
+            <img src="{{restaurant.client_info.restaurantLogo}}"/>
+            <p><strong>{{restaurant.client_info.restaurantName}}</strong></p>
+          </ion-card>
+      </div>
+    </ion-list>
+  </div>
+</ion-content>

@@ -56,11 +56,8 @@ ion-label h2 {
   border: none !important;
   padding: 10px;
 }
-ion-card ion-list.listContainer ion-item {
-  border-bottom: 1px solid #eee;
-}
-ion-list.listContainer div:first-child {
-  border-top: none;
+.listContainer ion-item {
+  border-bottom: 1px solid #bbb;
 }
 .ion-page {
   max-width: 500px;
@@ -105,12 +102,18 @@ ion-segment-button.segment-button-checked {
 ion-button.fullWidth {
   width: calc(100% - 20px);
 }
+.close {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+}
 .statusHeader {
   background-color: #000;
-  background-image: url(./assets/header.png);
+  background-image: url(./assets/background.jpg);
   background-position: center;
   background-size: cover;
   min-height: 150px;
+  padding-top: 20px;
 }
 .statusBar {
   width: 95%;
@@ -215,11 +218,11 @@ p {
   opacity: 0.2;
 }
 .appLogo {
-  max-width: 40px;
-  left: 10px;
+  max-width: 25px;
+  left: 15px;
   z-index: 999;
   position: absolute;
-  top: 15px;
+  top: 20px;
 }
 .restaurantLogo {
   max-width: 45px;
@@ -256,7 +259,17 @@ p {
 .hide {
   display:none;
 }
-.readyToOrderNotice, .completeNotice {
+.arrow-down {
+  width: 0;
+  position: absolute;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #777;
+  top: 30px;
+  right: 60px;
+}
+.readyToOrderNotice, .completeNotice, .selectRestaurant {
   position: absolute;
   z-index: 999;
   width: 80%;
@@ -265,8 +278,11 @@ p {
   left: 10%;
   top: 30%;
 }
-.readyToOrderNotice h3, .completeNotice h3 {
-  font-size: 3em;
+.selectRestaurant {
+  box-shadow: 0px 10px 15px rgba(0,0,0,0.3);
+}
+.readyToOrderNotice h3, .completeNotice h3, .selectRestaurant h3 {
+  font-size: 2em;
   font-weight: bold;
   line-height: 1em;
   text-align: center;
@@ -311,4 +327,16 @@ p {
   min-height: 5em;
   padding: 10px;
   font-weight: bold;
+}
+ion-card.pickRestaurant {
+  width: calc(50% - 20px);
+  float: left;
+  text-align: center;
+  border: 1px solid #fff;
+}
+ion-card.pickRestaurant.selected {
+  border:1px solid red;
+}
+.pickRestaurant img {
+  max-height: 8em;
 }

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Storage } from '@ionic/storage';
 import { ModalController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { Tab2Page } from '../tab2/tab2.page';
+import { Component } from "@angular/core";
+import { Router } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -21,6 +22,7 @@ export class Tab1Page {
   // Array variables
   public itemList: any;
   public numItems: any;
+  public restaurants: any;
   public items = [];
   public presentModalVar;
 
@@ -47,24 +49,50 @@ export class Tab1Page {
   constructor(
     public afd: AngularFireDatabase,
     private toastCtrl: ToastController,
+    public router: Router,
     public modalController: ModalController,
     public storage: Storage) {
+      this.getRestaurants();
+      this.checkDate();
+  }
 
-      localStorage.setItem('firebaseName', 'bellsSweetFactory');
+  ionViewWillEnter(){
+    this.checkDate();
+    this.restaurantLogo = localStorage.getItem('restaurantLogo');
+    if (!localStorage.getItem('firebaseName')){
+      this.router.navigate(['/choose-restaurant']);
+    }else {
+      this.firebaseName = localStorage.getItem('firebaseName');
+      this.setData(this.firebaseName);
+    }
 
-      if (localStorage.getItem('firebaseName')){
-        this.firebaseName = localStorage.getItem('firebaseName');
-        this.setData(this.firebaseName);
-      }
+  // Set default tab
+  this.tab = 'myNumber';
 
-    // Set default tab
-    this.tab = 'myNumber';
+  // Get the current date
+  this.getItems(this.getCurrentDate());
 
-    // Get the current date
-    this.getItems(this.getCurrentDate());
+  // Get localStorage Info
+  this.getLocalStorageInfo();
 
-    // Get localStorage Info
-    this.getLocalStorageInfo();
+  }
+
+  checkDate(){
+    if (localStorage.getItem('date') && localStorage.getItem('date') !== this.getCurrentDate()){
+      console.log('dates mismatch')
+      localStorage.removeItem('myID');
+      this.myID = null;
+      localStorage.removeItem('name');
+      this.name = null;
+      localStorage.removeItem('timeStamp');
+      this.timeStamp = null;
+      localStorage.removeItem('status');
+      this.status = null;
+      localStorage.removeItem('date');
+      this.date = null;
+      localStorage.removeItem('time');
+      this.time = null;
+    }
   }
 
   setData(firebaseName){
@@ -85,7 +113,22 @@ export class Tab1Page {
     return date;
   }
 
+  getRestaurants(){
+    //  this.restaurants = this.afd.list('/restaurants/').valueChanges();
+     this.afd.list('/restaurants/').valueChanges()
+      .subscribe(data => {
+        this.restaurants = data;
+        console.log(this.restaurants);
+      });
+    }
+
+  selectRestaurant() {
+    localStorage.setItem('pageRoute','/tabs/tab1');
+      this.router.navigate(['/choose-restaurant']);
+  }
+
   getItems(date) {
+    this.firebaseName = localStorage.getItem('firebaseName');
     // Pull items from Firebase to be displayed
     this.itemList = this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges();
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
@@ -197,12 +240,20 @@ export class Tab1Page {
   addItem() {
     // Get customer name field input
     let name: string = $('#nameInput').val();
+    name = name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 
     // Throw error if name is not provided.
     if (!name) {
       this.presentToast('Oops!', 'Name is required.');
       return;
     }
+
+    localStorage.removeItem('name');
+    localStorage.removeItem('date');
+    localStorage.removeItem('time');
+    localStorage.removeItem('myID');
+    localStorage.removeItem('status');
+
     let date = this.getCurrentDate();
     let time = this.getTime();
 
@@ -211,6 +262,12 @@ export class Tab1Page {
     let newDate = new Date();
     this.timeStamp = newDate.getTime();
     localStorage.setItem('timeStamp', this.timeStamp);
+    this.firebaseName = localStorage.getItem('firebaseName');
+
+    this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
+      .subscribe(data => {
+        this.numItems = data.length + 1;
+      });
 
     // Push data to Firebase
     this.afd.object('/restaurants/' + this.firebaseName + '/' + date + '/' + this.timeStamp + '_' + name)
@@ -253,13 +310,12 @@ export class Tab1Page {
       message: message,
       position: 'top',
       buttons: [{
-        text: 'Dismiss',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }
-      ]
+          text: 'Got it!',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }]
     });
 
     // Present the popup
@@ -289,6 +345,7 @@ export class Tab1Page {
     
     return time;  
   }
+
   markCancelled() {
     this.date = localStorage.getItem('date');
     this.name = localStorage.getItem('name');
@@ -304,6 +361,33 @@ export class Tab1Page {
     this.timeStamp = null;
     this.time = null;
     localStorage.clear();
+  }
+
+  async areYouSure() {
+    // Create the popup
+    const toast = await this.toastCtrl.create({
+      header: 'Are you sure you want to cancel?',
+      message: 'You will lose your spot in line and your order will be cancelled.',
+      position: 'top',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.markCancelled();
+          }
+        },
+        {
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }
+      ]
+    });
+
+    // Present the popup
+    toast.present();
   }
 
   getNewNumber(){
