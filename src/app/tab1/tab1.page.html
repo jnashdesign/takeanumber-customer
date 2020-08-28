@@ -1,11 +1,3 @@
-<div class="selectRestaurant hide">
-  <ion-list>
-    <ion-card (click)="selectRestaurant(restaurant.client_info.firebaseName)" class="pickRestaurant" *ngFor="let restaurant of restaurants">
-      <img src="{{restaurant.client_info.restaurantLogo}}"/>
-      <p>{{restaurant.client_info.restaurantName}}</p>
-    </ion-card>
-  </ion-list>
-</div>
 <div class="readyToOrderNotice hide">
   <ion-card>
   <h3>{{name}}, we are ready to take your order!</h3>

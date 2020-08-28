@@ -36,12 +36,12 @@ export class ChooseRestaurantPage {
     }
 
   ionViewDidEnter(){
-    setTimeout(function(){
-      if (localStorage.getItem('firebaseName')){
-        let firebaseName = localStorage.getItem('firebaseName');
-        $('#'+firebaseName).addClass('selected');
-      }
-    }, 10)
+    // setTimeout(function(){
+    //   if (localStorage.getItem('firebaseName')){
+    //     let firebaseName = localStorage.getItem('firebaseName');
+    //     $('#'+firebaseName).addClass('selected');
+    //   }
+    // }, 10)
   }
 
   getRestaurants(){
@@ -51,12 +51,7 @@ export class ChooseRestaurantPage {
     });
   }
 
-  selectRestaurant($event, firebaseName, restaurantLogo) {
-    $('.pickRestaurant').removeClass('selected');
-    let chosenID = $event.path[3].id;
-    if (chosenID){
-      $('#'+chosenID).addClass('selected');
-    }
+  selectRestaurant(firebaseName, restaurantLogo) {
 
     if (localStorage.getItem('firebaseName') && firebaseName !== localStorage.getItem('firebaseName')){
       this.areYouSure(firebaseName, restaurantLogo);
@@ -94,9 +89,6 @@ export class ChooseRestaurantPage {
           text: 'No',
           role: 'cancel',
           handler: () => {
-            $('.pickRestaurant').removeClass('selected');
-            let firebaseName = localStorage.getItem('firebaseName');
-            $('#'+firebaseName).addClass('selected');
             console.log('Cancel clicked');
             return;
           }

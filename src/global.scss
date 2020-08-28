@@ -112,8 +112,7 @@ ion-button.fullWidth {
   background-image: url(./assets/background.jpg);
   background-position: center;
   background-size: cover;
-  min-height: 150px;
-  padding-top: 20px;
+  min-height: 100px;
 }
 .statusBar {
   width: 95%;
@@ -329,10 +328,11 @@ p {
   font-weight: bold;
 }
 ion-card.pickRestaurant {
-  width: calc(50% - 20px);
+  width: calc(48% - 20px);
   float: left;
   text-align: center;
   border: 1px solid #fff;
+  margin: 10px;
 }
 ion-card.pickRestaurant.selected {
   border:1px solid red;
