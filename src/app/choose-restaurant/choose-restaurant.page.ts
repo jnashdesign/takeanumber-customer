@@ -204,9 +204,9 @@ export class ChooseRestaurantPage {
       localStorage.removeItem('myID');
       localStorage.removeItem('name');
       localStorage.removeItem('timeStamp');
-      localStorage.removeItem('status');
       localStorage.removeItem('date');
       localStorage.removeItem('time');
+      localStorage.setItem('status','start');
   }
 
 }
