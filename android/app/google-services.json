@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "448352748642",
+    "firebase_url": "https://takeanumber-tech.firebaseio.com",
+    "project_id": "takeanumber-tech",
+    "storage_bucket": "takeanumber-tech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448352748642:android:8fd89341625719d0afbd3b",
+        "android_client_info": {
+          "package_name": "tech.takeanumber.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448352748642-6o85508aejs9ohp0rgt5lkvfsp9pa97i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwFFm1G-H_u5VKDkUr-NsUmNwQNICN_GQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448352748642-6o85508aejs9ohp0rgt5lkvfsp9pa97i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448352748642-h3kjakjnod39ifbjoho65b2vlcmvlu0s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.takeanumber.customer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,6 +5,7 @@ import { ToastController } from '@ionic/angular';
 import { Tab2Page } from '../tab2/tab2.page';
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
+import { FcmService } from '../services/fcm.service';
 declare var $: any;
 
 @Component({
@@ -51,12 +52,15 @@ export class Tab1Page {
     private toastCtrl: ToastController,
     public router: Router,
     public modalController: ModalController,
+    public fcmService: FcmService,
     public storage: Storage) {
       this.getRestaurants();
       this.checkDate();
+      this.fcmService.initPush();
   }
 
   ionViewWillEnter(){
+    console.log('tab1 test');
     this.checkDate();
     this.restaurantLogo = localStorage.getItem('restaurantLogo');
     if (!localStorage.getItem('firebaseName')){
@@ -176,6 +180,21 @@ export class Tab1Page {
                 $('#currentStatus').removeClass().addClass('step2');
                 this.tab = 'waiting';
               }else if (this.status == 'ready'){
+                console.log('status is ready')
+                if (localStorage.getItem('pushToken')){
+                  let token = localStorage.getItem('pushToken');
+                  let messageCount;
+                  if (localStorage.getItem('messageCount')){
+                    messageCount = parseInt(localStorage.getItem('messageCount')) + 1;
+                  } else {
+                    messageCount = 1;
+                  }
+                  let title = 'Status Update';
+                  let message = 'Ready to take your order!';
+                  console.log('just before FCM Service');
+                  console.log(token, messageCount, title, message);
+                  this.fcmService.sendRequestPush(token, messageCount, title, message);  
+                }
                 if (!localStorage.getItem('acknowledged')){
                   $('.readyToOrderNotice').removeClass('hide');
                 }
@@ -184,6 +203,17 @@ export class Tab1Page {
                 localStorage.removeItem('acknowledged');
                 $('#currentStatus').removeClass().addClass('step4');
               }else if (this.status == 'complete'){
+                if (localStorage.getItem('token')){
+                  let token = localStorage.getItem('token');
+                  let messageCount;
+                  if (localStorage.getItem('messageCount')){
+                    messageCount = parseInt(localStorage.getItem('messageCount')) + 1;
+                  } else {
+                    messageCount = 1;
+                  }                  let title = 'Status Update';
+                  let message = 'Your Order is Ready!';
+                  this.fcmService.sendRequestPush(token, messageCount, title, message);  
+                }
                 $('#currentStatus').removeClass().addClass('step5');
                 if (!localStorage.getItem('acknowledged')){
                   $('.completeNotice').removeClass('hide');
