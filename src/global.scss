@@ -70,6 +70,9 @@ ion-note {
 ion-header ion-toolbar {
   min-height: 80px;
 }
+ion-header ion-title {
+  margin-top: 10px;
+}
 ion-item-sliding {
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
@@ -195,7 +198,7 @@ p {
 }
 .topBar {
   padding-top: 20px;
-  min-height: 60px;
+  min-height: 90px;
   background: #fff;
 }
 #nameInput {
@@ -222,7 +225,7 @@ p {
   left: 15px;
   z-index: 999;
   position: absolute;
-  top: 20px;
+  top: 40px;
 }
 .restaurantLogo {
   max-width: 45px;
@@ -230,7 +233,7 @@ p {
   position: absolute;
   right: 10px;
   z-index: 999999;
-  top: 10px;
+  top: 40px;
 }
 .account-info ion-item {
   border-bottom: 1px solid #ddd;
@@ -274,7 +277,6 @@ p {
   z-index: 999;
   width: 80%;
   min-height: 250px;
-  background: #fff;
   left: 10%;
   top: 30%;
 }
