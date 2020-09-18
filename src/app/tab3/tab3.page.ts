@@ -47,7 +47,6 @@ export class Tab3Page {
     setData(){
       console.log('setDataRan');
 
-      console.log(localStorage.getItem('restaurantEmail'))
       // Set the main stuff
       this.restaurantName = localStorage.getItem('restaurantName');
       this.restaurantLogo = localStorage.getItem('restaurantLogo');

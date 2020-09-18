@@ -60,7 +60,6 @@ export class Tab1Page {
   }
 
   ionViewWillEnter(){
-    console.log('tab1 test');
     this.checkDate();
     this.restaurantLogo = localStorage.getItem('restaurantLogo');
     if (!localStorage.getItem('firebaseName')){
@@ -122,7 +121,6 @@ export class Tab1Page {
      this.afd.list('/restaurants/').valueChanges()
       .subscribe(data => {
         this.restaurants = data;
-        console.log(this.restaurants);
       });
     }
 
@@ -156,78 +154,61 @@ export class Tab1Page {
         let tempArray: any = [];
         res.forEach((e) => {
           tempArray.push(e.payload.val());
-
           if (!localStorage.getItem('timeStamp')){
             return;
           }else{
-            $(tempArray).each(function(i,res){
-              if (res.timeStamp == localStorage.getItem('timeStamp')){
-  
-              localStorage.setItem('myID',res.id);
-              localStorage.setItem('date',res.date);
-              localStorage.setItem('name',res.name);
-              localStorage.setItem('status',res.status);
-              localStorage.setItem('time',res.time_gotNumber);
-              localStorage.setItem('timeStamp',res.timeStamp);
-
-              this.status = localStorage.getItem('status');
-
-              if (this.status == 'start'){
-                localStorage.removeItem('acknowledged');
-                $('#currentStatus').removeClass().addClass('step1');
-              }else if (this.status == 'waiting'){
-                localStorage.removeItem('acknowledged');
-                $('#currentStatus').removeClass().addClass('step2');
-                this.tab = 'waiting';
-              }else if (this.status == 'ready'){
-                console.log('status is ready')
-                if (localStorage.getItem('pushToken')){
-                  let token = localStorage.getItem('pushToken');
-                  let messageCount;
-                  if (localStorage.getItem('messageCount')){
-                    messageCount = parseInt(localStorage.getItem('messageCount')) + 1;
-                  } else {
-                    messageCount = 1;
-                  }
-                  let title = 'Status Update';
-                  let message = 'Ready to take your order!';
-                  console.log('just before FCM Service');
-                  console.log(token, messageCount, title, message);
-                  this.fcmService.sendRequestPush(token, messageCount, title, message);  
-                }
-                if (!localStorage.getItem('acknowledged')){
-                  $('.readyToOrderNotice').removeClass('hide');
-                }
-                $('#currentStatus').removeClass().addClass('step3');
-              }else if (this.status == 'in-progress'){
-                localStorage.removeItem('acknowledged');
-                $('#currentStatus').removeClass().addClass('step4');
-              }else if (this.status == 'complete'){
-                if (localStorage.getItem('token')){
-                  let token = localStorage.getItem('token');
-                  let messageCount;
-                  if (localStorage.getItem('messageCount')){
-                    messageCount = parseInt(localStorage.getItem('messageCount')) + 1;
-                  } else {
-                    messageCount = 1;
-                  }                  let title = 'Status Update';
-                  let message = 'Your Order is Ready!';
-                  this.fcmService.sendRequestPush(token, messageCount, title, message);  
-                }
-                $('#currentStatus').removeClass().addClass('step5');
-                if (!localStorage.getItem('acknowledged')){
-                  $('.completeNotice').removeClass('hide');
-                }
-              }else if (this.status == 'on-hold'){
-                localStorage.removeItem('acknowledged');
-                $('#currentStatus').removeClass().addClass('step2').addClass('on-hold');
-              }
-            }
-            return;
-          });
+            this.processArray(tempArray);
         }
       });
     });
+  }
+
+  processArray(tempArray){
+    console.log('processArray()');
+    let myOrderStatus: any;
+    $(tempArray).each(function(i,res){
+      if (res.timeStamp == localStorage.getItem('timeStamp')){
+        localStorage.setItem('myID',res.id);
+        localStorage.setItem('date',res.date);
+        localStorage.setItem('name',res.name);
+        localStorage.setItem('status',res.status);
+        localStorage.setItem('time',res.time_gotNumber);
+        localStorage.setItem('timeStamp',res.timeStamp);
+        this.status = localStorage.getItem('status');
+
+        myOrderStatus = res.status;
+      }
+    });
+    this.checkStatus(myOrderStatus);
+  }
+
+  checkStatus(status){
+    console.log('checkStatus()');
+    if (status == 'start'){
+      localStorage.removeItem('acknowledged');
+      $('#currentStatus').removeClass().addClass('step1');
+    }else if (status == 'waiting'){
+      localStorage.removeItem('acknowledged');
+      $('#currentStatus').removeClass().addClass('step2');
+      this.tab = 'waiting';
+    }else if (status == 'ready'){
+      console.log('status is ready');
+      if (!localStorage.getItem('acknowledged')){
+        $('.readyToOrderNotice').removeClass('hide');
+      }
+      $('#currentStatus').removeClass().addClass('step3');
+    }else if (status == 'in-progress'){
+      localStorage.removeItem('acknowledged');
+      $('#currentStatus').removeClass().addClass('step4');
+    }else if (status == 'complete'){
+      $('#currentStatus').removeClass().addClass('step5');
+      if (!localStorage.getItem('acknowledged')){
+        $('.completeNotice').removeClass('hide');
+      }
+    }else if (this.status == 'on-hold'){
+      localStorage.removeItem('acknowledged');
+      $('#currentStatus').removeClass().addClass('step2').addClass('on-hold');
+    }
   }
 
   getOrderData(status) {
@@ -270,7 +251,6 @@ export class Tab1Page {
   addItem() {
     // Get customer name field input
     let name: string = $('#nameInput').val();
-    name = name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 
     // Throw error if name is not provided.
     if (!name) {
@@ -299,15 +279,18 @@ export class Tab1Page {
         this.numItems = data.length + 1;
       });
 
+      let token = localStorage.getItem('pushToken').replace(/['"]+/g, '') || 'null';
+
     // Push data to Firebase
     this.afd.object('/restaurants/' + this.firebaseName + '/' + date + '/' + this.timeStamp + '_' + name)
       .update({
         date: date,
-        name: name,
         id: this.numItems,
+        name: name,
+        status: 'waiting',
         time_gotNumber: time,
         timeStamp: this.timeStamp,
-        status: 'waiting'
+        token: token
       });
 
     this.name = name;
@@ -386,11 +369,20 @@ export class Tab1Page {
       });
     this.status = 'cancelled';
     $('#currentStatus').removeClass().addClass('step1');
+
+    this.myID = null;
+    this.status = 'start';
     this.name = null;
     this.date = null;
     this.timeStamp = null;
     this.time = null;
-    localStorage.clear();
+
+    localStorage.removeItem('myID');
+    localStorage.removeItem('status');
+    localStorage.removeItem('name');
+    localStorage.removeItem('date');
+    localStorage.removeItem('timeStamp');
+    localStorage.removeItem('time');
   }
 
   async areYouSure() {

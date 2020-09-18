@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as $ from 'jquery';
 
 import {
   Plugins,
@@ -65,36 +64,5 @@ export class FcmService {
         }
       }
     );
-  }
-
-  sendRequestPush(token, messageCount, title, message){
-    console.log('token: ' + token + ',' + 'messageCount: ' + messageCount + ',' + 'title: ' + title + ',' + 'Message: ' + message);
-    $.ajax({
-        type : 'POST',
-        url : "https://fcm.googleapis.com/fcm/send",
-        headers : {
-            Authorization : 'key=AAAAaGPoBGI:APA91bHgTI7KUIvGIb9qYrl82YhiW3_ffyTW0Y5SBd4H9nGuruU6atrhpOrH2tSNilDrY2EJl79OkUNqR1DRRWpW1pJWfuX470FRdkt5nawUXRhCuyYOhHAz4iIa0-3L02sp5yBi17aL'
-        },
-        contentType : 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({
-            "to": token,
-            "notification" : {
-              "body" : message,
-              "title" : title,
-              "content_available" : true,
-              "priority" : "high",
-              "badge": messageCount
-              }
-        }),
-        success : function(response) {
-            console.log(response);
-        },
-        error: function(xhr, status, error) {
-          console.log('An error occurred with AJAX')
-          var err = eval("(" + xhr.responseText + ")");
-          console.log(err.Message);
-        }
-    });
   }
 }
