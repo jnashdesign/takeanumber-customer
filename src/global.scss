@@ -56,6 +56,9 @@ ion-label h2 {
   border: none !important;
   padding: 10px;
 }
+ion-tab-button.tab-selected {
+  border-top: 2px solid;
+}
 .listContainer ion-item {
   border-bottom: 1px solid #bbb;
 }

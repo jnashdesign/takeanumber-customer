@@ -400,14 +400,12 @@ export class Tab1Page {
 
     this.myID = null;
     this.status = 'start';
-    this.name = null;
     this.date = null;
     this.timeStamp = null;
     this.time = null;
 
     localStorage.removeItem('myID');
     localStorage.removeItem('status');
-    localStorage.removeItem('name');
     localStorage.removeItem('date');
     localStorage.removeItem('timeStamp');
     localStorage.removeItem('time');
@@ -442,11 +440,17 @@ export class Tab1Page {
 
   getNewNumber(){
     $('#currentStatus').removeClass().addClass('step1');
-    this.name = null;
+    this.myID = null;
+    this.status = 'start';
     this.date = null;
     this.timeStamp = null;
     this.time = null;
-    localStorage.clear();
+
+    localStorage.removeItem('myID');
+    localStorage.removeItem('status');
+    localStorage.removeItem('date');
+    localStorage.removeItem('timeStamp');
+    localStorage.removeItem('time');
   }
 
   async presentModal() {

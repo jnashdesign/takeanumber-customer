@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
+declare var $: any;
 
 @Component({
   selector: 'app-tab3',
@@ -42,6 +43,11 @@ export class Tab3Page {
         this.setData();
        }, 500);
 
+       if (localStorage.getItem('status')){
+        $('ion-button.checkStatus').text('Check Order Status')
+       }else{
+        $('ion-button.checkStatus').text('Get A Number')
+       }
     }
 
     setData(){

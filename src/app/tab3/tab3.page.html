@@ -8,6 +8,9 @@
 <ion-content class="account-info" [fullscreen]="true" padding>
   <ion-card padding>
     <img style="margin:-10px auto 0;display:block;" src="{{restaurantLogo}}"/>
+    <ion-button class="checkStatus" expand="full" color="secondary" routerLink="/tabs/tab1/">
+      Get A Number
+    </ion-button>
     <ion-row>
       <ion-col>
         <p *ngIf="restaurantSite"><strong>Website</strong><br><a href="{{restaurantSite}}">{{restaurantSite}}</a></p>
