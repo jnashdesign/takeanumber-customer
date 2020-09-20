@@ -6,6 +6,7 @@ import { Tab2Page } from '../tab2/tab2.page';
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
 import { FcmService } from '../services/fcm.service';
+import { Badge } from '@ionic-native/badge/ngx';
 declare var $: any;
 
 @Component({
@@ -53,6 +54,7 @@ export class Tab1Page {
     public router: Router,
     public modalController: ModalController,
     public fcmService: FcmService,
+    private badge: Badge,
     public storage: Storage) {
       this.getRestaurants();
       this.checkDate();
@@ -61,13 +63,8 @@ export class Tab1Page {
 
   ionViewWillEnter(){
     this.checkDate();
+    this.checkForRequiredInfo();
     this.restaurantLogo = localStorage.getItem('restaurantLogo');
-    if (!localStorage.getItem('firebaseName')){
-      this.router.navigate(['/choose-restaurant']);
-    }else {
-      this.firebaseName = localStorage.getItem('firebaseName');
-      this.setData(this.firebaseName);
-    }
 
   // Set default tab
   this.tab = 'myNumber';
@@ -77,7 +74,21 @@ export class Tab1Page {
 
   // Get localStorage Info
   this.getLocalStorageInfo();
+  this.badge.clear();
+    if (localStorage.getItem('name')){
+      let nameInput = localStorage.getItem('name');
+      $('#nameInput').val(nameInput);
+    }
+  }
 
+  checkForRequiredInfo(){
+    if (!localStorage.getItem('firebaseName')){
+      this.presentToast('Oops!', 'Something went wrong, let\'s try again.');
+      this.router.navigate(['/choose-restaurant']);
+    }else {
+      this.firebaseName = localStorage.getItem('firebaseName');
+      this.setData(this.firebaseName);
+    }
   }
 
   checkDate(){
@@ -249,6 +260,8 @@ export class Tab1Page {
   }
 
   addItem() {
+    this.checkForRequiredInfo();
+
     // Get customer name field input
     let name: string = $('#nameInput').val();
 
@@ -278,20 +291,35 @@ export class Tab1Page {
       .subscribe(data => {
         this.numItems = data.length + 1;
       });
-
-      let token = localStorage.getItem('pushToken').replace(/['"]+/g, '') || 'null';
+      
+      let token;
+      let payload;
+      // Check to see if there's a token
+      if (localStorage.getItem('pushToken')){
+        token = localStorage.getItem('pushToken').replace(/['"]+/g, '');
+        payload = {
+          date: date,
+          id: this.numItems,
+          name: name,
+          status: 'waiting',
+          time_gotNumber: time,
+          timeStamp: this.timeStamp,
+          token: token
+        }
+      } else {
+        payload = {
+          date: date,
+          id: this.numItems,
+          name: name,
+          status: 'waiting',
+          time_gotNumber: time,
+          timeStamp: this.timeStamp
+        }
+      }
 
     // Push data to Firebase
     this.afd.object('/restaurants/' + this.firebaseName + '/' + date + '/' + this.timeStamp + '_' + name)
-      .update({
-        date: date,
-        id: this.numItems,
-        name: name,
-        status: 'waiting',
-        time_gotNumber: time,
-        timeStamp: this.timeStamp,
-        token: token
-      });
+    .update(payload);      
 
     this.name = name;
     localStorage.setItem('name', this.name);

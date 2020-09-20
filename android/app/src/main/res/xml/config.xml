@@ -6,6 +6,10 @@
     <param name="android-package" value="it.nexxa.base64ToGallery.Base64ToGallery"/>
   </feature>
 
+  <feature name="Badge">
+    <param name="android-package" value="de.appplant.cordova.plugin.badge.Badge"/>
+  </feature>
+
   <feature name="BarcodeScanner">
     <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>
   </feature>
