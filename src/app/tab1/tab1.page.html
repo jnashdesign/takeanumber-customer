@@ -14,11 +14,72 @@
   </ion-button>
 </ion-card>
 </div>
+<div *ngIf="textToggle">
+  <div class="overlay"></div>
+</div>
+<div *ngIf="numberSaved && textUpdates; else optedOut">
+  <img class="textLogoBtn" src="../../assets/text.svg">
+</div>
+<ng-template #optedOut>
+  <img class="textLogoBtn" src="../../assets/noText.svg">
+</ng-template>
+
+<ion-toggle class="textToggle" [(ngModel)]="textToggle">
+</ion-toggle>
+  <div *ngIf="textToggle" class="textSettingsContainer">
+    <ion-item>
+      <div class="messageIcons">
+        <img style="width:35px;height:35px;margin-right:10px" src="../../assets/text.svg" />
+      </div>
+      <div *ngIf="textUpdates; else optedOut">
+        <h5>Want text updates? <strong>Yes</strong></h5>
+      </div>
+      <ng-template #optedOut>
+        <div>
+          <h5>Want text updates? <strong>No</strong></h5>
+            <ion-item>
+              <p class="noThanks"><strong>Warning:</strong> Without text updates, you will have to watch this page for order updates.</p>
+            </ion-item>
+          </div>
+      </ng-template>
+      <ion-toggle [(ngModel)]="textUpdates" slot="end" mode="ios" (click)="optInOutTexts()">
+      </ion-toggle>
+    </ion-item>
+    <div *ngIf="textUpdates">
+      <ion-grid>
+        <ion-row style="margin-top: -10px">
+          <ion-col size="8">
+            <ion-item >
+              <ion-input mode="ios" id="phoneNumberInput" type="text" placeholder="My Number" (keypress)="numbersOnly($event)" [(ngModel)]="phoneNumber">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="!numberSaved; else updateWarning">
+              <p style="font-size: 0.7em;color:red;margin-left: 7px;"><strong>Warning:</strong> Number not saved.</p>  
+            </div>
+            <ng-template #updateWarning>
+              <div>
+                <p style="font-size: 0.7em;margin-left: 7px;">Your number is saved!</p>
+              </div>
+            </ng-template>
+          </ion-col>
+          <ion-col size="4">
+            <ion-item>
+              <div *ngIf="!numberSaved; else update">
+                <button (click)="addPhoneNumber()">Save</button>
+              </div>
+              <ng-template #update>
+                <button (click)="addPhoneNumber()">Update</button>
+              </ng-template>
+            </ion-item>
+          </ion-col>  
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+<a href="http://takeanumber.tech" target="_blank"><img class="appLogo" src="../../assets/takeANumber.png" end/></a>
 <ion-header class="topBar">
-  <img class="appLogo"  [routerLink]="['/choose-restaurant/']" src="../../assets/hamburger-menu.svg" start />
-  <ion-title>
-    My Status
-  </ion-title>
+  <img class="selectRestaurantIcon" [routerLink]="['/choose-restaurant/']" src="../../assets/hamburger-menu.svg" start />
   <img class="restaurantLogo" src="{{restaurantLogo}}" end/>
 </ion-header>
 <ion-header class="statusHeader">
@@ -32,7 +93,7 @@
   </div>
 </ion-header>
 <ion-header>
-  <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)">
+  <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="ios">
     <ion-segment-button value="myNumber" checked>
       <ion-label>My Number</ion-label>
       <ion-icon name="duplicate"></ion-icon>
@@ -52,33 +113,43 @@
 
 <ion-content padding [fullscreen]="true">
   <div [ngSwitch]="tab">
-    <div *ngSwitchCase="'waiting'" class="waitingTab">
+    <ion-card *ngSwitchCase="'waiting'" class="waitingTab">
       <ion-item *ngIf="waitingCustomers < 1">
         <ion-label>
           <h2>No Waiting Customers.</h2>
         </ion-label>
       </ion-item>
       
-      <ion-list class="listContainer waitingList" *ngFor="let item of itemList | async">
+      <ion-list class="listContainer waitingList" *ngFor="let item of itemList | async">    
         <div *ngIf="item.status == 'waiting'">
-          <ion-item>
+
+          <div *ngIf="item.timeStamp == timeStamp; else notMine">
+          <ion-item class="myOrder">
             <ion-label id="item-{{item.timeStamp}}">
-              <div *ngIf="item.timeStamp == timeStamp; else notMine">
-              <h2 class="myOrder">{{item.id}} &mdash; {{item.name}}</h2>
-            </div>
-            <ng-template #notMine>
-              <h2>{{item.id}} &mdash; {{item.name}}</h2>
-            </ng-template>        
+              <h2>{{item.id}} &mdash; {{item.name}} (Me)</h2>
             </ion-label>
             <ion-note slot="end">
               {{item.time}}
             </ion-note>
           </ion-item>
         </div>
-      </ion-list>
-    </div>
 
-    <div *ngSwitchCase="'in-progress'" class="inProgressTab">
+        <ng-template #notMine>
+          <ion-item>
+            <ion-label id="item-{{item.timeStamp}}">
+              <h2 >{{item.id}} &mdash; {{item.name}}</h2>
+            </ion-label>
+            <ion-note slot="end">
+              {{item.time}}
+            </ion-note>
+          </ion-item>
+        </ng-template>        
+
+        </div>
+      </ion-list>
+    </ion-card>
+
+    <ion-card *ngSwitchCase="'in-progress'" class="inProgressTab">
       <ion-item *ngIf="inProgressOrders < 1">
         <ion-label>
           <h2>No In Progress Orders.</h2>
@@ -102,22 +173,21 @@
         </ion-item>
       </div>
     </ion-list>
-  </div>
-
+  </ion-card>
 
     <ion-card *ngSwitchCase="'myNumber'">
       <div class="needANumber" *ngIf="!timeStamp">
         <ion-item>
-          You don't have a number yet.
+          <h5>Want's your name?</h5>
         </ion-item>
         <ion-item>
-          <ion-input id="nameInput" type="text" placeholder="Customer Name" [(ngModel)]="name">
+          <ion-input id="nameInput" placeholder="Your Name" type="text" [(ngModel)]="name">
           </ion-input>
         </ion-item>
 
-        <ion-button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
-          Reserve My Spot In Line
-        </ion-button>
+        <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
+          Get My Number
+        </button>
       </div>
 
       <div *ngIf="timeStamp">
@@ -130,13 +200,13 @@
           </div>   
         </div>
         <ng-template #incomplete>
-          <ion-button (click)="areYouSure()" expand="full">
+          <button class="cancel" (click)="areYouSure()" expand="full">
             Cancel My Order
-          </ion-button>
+          </button>
           <div class="myNumberCard">
             <h2 class="name">{{name}}</h2>
             <h1 class="myID">{{myID}}</h1>
-            <h3><span class="date">{{date}}</span> | <span class="time">{{time}}</span></h3>
+            <h3><span class="date">{{date}}</span> @<span class="time">{{time}}</span></h3>
           </div>  
         </ng-template>
       </div>

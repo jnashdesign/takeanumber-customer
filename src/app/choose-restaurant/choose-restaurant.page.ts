@@ -52,7 +52,6 @@ export class ChooseRestaurantPage {
   }
 
   selectRestaurant(firebaseName, restaurantLogo) {
-
     if (localStorage.getItem('firebaseName') && firebaseName !== localStorage.getItem('firebaseName')){
       this.areYouSure(firebaseName, restaurantLogo);
     }else{

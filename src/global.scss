@@ -29,19 +29,36 @@
   font-family: "futuraBlack";
   src: url('./assets/unicode.futurab.ttf') format('truetype');
 }
-
+:root {
+  --ion-safe-area-top: 20px;
+  --ion-safe-area-bottom: 22px;
+  --ion-color-primary: #299e0e;
+}
 html {
   background-image: url(./assets/background.jpg);
   background-position: center;
   background-size: contain;
 }
+body {
+  background: transparent;
+}
 
+#numErrorMsg {
+  color: red;
+}
+ion-tab-bar {
+  padding-bottom: 0;
+}
 ion-item {
   --border-width: 0;
   --inner-border-width: 0;
 }
+ion-item .item-native {
+  padding: 0;
+}
 ion-card {
   padding: 10px 0;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
 ion-title {
   font-weight: bold;
@@ -74,7 +91,7 @@ ion-header ion-toolbar {
   min-height: 80px;
 }
 ion-header ion-title {
-  margin-top: 10px;
+  margin-top: 0px;
 }
 ion-item-sliding {
   border-top: 1px solid #ddd;
@@ -84,34 +101,160 @@ ion-item-sliding {
   margin-top: 10px;
   text-align: right;
 }
-ion-button {
-  margin: 10px;
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.75);
+  top: 0;
+  left: 0;
+  z-index: 99999999;
+}
+button {
+  background: #2ad85b;
+  color: #fff;
+  padding: 15px 30px;
+  border-radius: 10px;
+  width: calc(100% - 20px);
+  font-size: 1.25em;
+  margin: 15px auto;
+  display: block;
+}
+button.cancel {
+  background: #fb0929;
 }
 ion-segment {
   width: calc(100% + 10px);
   margin-left: -5px;
+  border-style: none;
 }
 ion-segment-button {
   background: #eee;
   --border-width:0px;
+  --background-hover: #eee !important;
   --indicator-color-checked: 0;
+  --background-checked: #eee;  
   border-radius: 0;
   margin-bottom: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+ion-segment-button ion-icon,
+ion-segment-button ion-label {
+  margin: 0;
 }
 ion-segment-button.segment-button-checked {
-  background: #fff;
-  --border-width:0px;
-  --indicator-color-checked: 0;   
+  background: #eee;
+  --indicator-color-checked: 0;
+  --border-radius: 0;
 }
 ion-button.fullWidth {
   width: calc(100% - 20px);
+}
+.needANumber h2 {
+  margin: 0;
+  padding: 0;
+  color: #555;
+  font-weight: bold;
+  font-size: 1em !important;
+}
+.textSettingsContainer {
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  width: 90%;
+  margin: 25px;
+  border-radius: 10px;
+  padding-bottom: 10px;
+  position: absolute;
+  top: calc(100% - 200px);
+  z-index: 999999999;
+  min-height: 160px;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.4);
+}
+.textToggle {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  z-index: 99999999999;
+  opacity: 0;
+}
+.textSettingsContainer ion-toggle {
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+.textLogoBtn {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  z-index: 9999999999;
+  width: 50px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 0px;
+  border: 1px solid #ddd;
+  box-shadow: 3px 3px 3px rgba(0,0,0,0.4);
+  animation: pulse 3s infinite;
+}
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(42, 216, 91, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 5px rgba(42, 216, 91, 0.3);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(42, 216, 91, 0);
+	}
+}
+.textSettingsContainer ion-item.item {
+  --background: transparent !important;
+  padding: 0;
+  margin-bottom: 0px;
+}
+.textSettingsContainer ion-item.item button {
+  width: 100%;
+  display: block;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 1em;
+  white-space: nowrap;
+}
+.textSettingsContainer h5 {
+  position: absolute;
+  top: 0;
+  left: 40px;
+}
+.textSettingsContainer a {
+  margin-left: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.noThanks {
+  margin-top: 40px;
+}
+.textStatus {
+  padding: 0;
+  margin: -0.5em 0 1em 0;
+  line-height: 1em;
+  color: #888;
+}
+.messageIcons {
+  top: 10px;
+  left: 0;
+  position: absolute;
 }
 .close {
   position: absolute;
   top: 0px;
   right: 10px;
+  width: 35px;
+  height: 35px;
 }
 .statusHeader {
   background-color: #000;
@@ -201,13 +344,17 @@ p {
 }
 .topBar {
   padding-top: 20px;
-  min-height: 90px;
+  min-height: 60px;
   background: #fff;
 }
-#nameInput {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-top: -0.5em;
+#nameInput, #phoneNumberInput {
+  border: 1px solid #ddd;
+  padding-left: 10px !important;
+  border-radius: 4px;
+}
+ion-icon.inputIcon {
+  position: absolute;
+  right: 20px;
 }
 .list-md {
   padding: 0;
@@ -223,44 +370,88 @@ p {
 #qrIMG {
   opacity: 0.2;
 }
-.appLogo {
-  max-width: 25px;
-  left: 15px;
+.settingsIcon {
+  width: 30px;
+  right: 15px;
   z-index: 999;
   position: absolute;
-  top: 40px;
+  top: 20px;
+  height: 30px;
 }
 .restaurantLogo {
-  max-width: 45px;
-  max-height: 45px;
+  width: 50px;
+  left: 10px;
+  z-index: 999;
   position: absolute;
-  right: 10px;
+  top: 5px;
+  height: 50px;
+}
+.selectRestaurantIcon {
+  width: 25px;
+  z-index: 999;
+  position: absolute;
+  top: 5px;
+  height: 50px;
+  right: 20px;
+}
+.appLogo {
+  max-width: 85px;
+  max-height: 85px;
+  position: absolute;
+  left: calc(50% - 40px);
   z-index: 999999;
-  top: 40px;
+  top: -5px;
+  display: block;
+  background: #fff;
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
 }
 .account-info ion-item {
   border-bottom: 1px solid #ddd;
+}
+.contactBtns a {
+  text-decoration: none;
+  color: #888;
+  border: 1px solid #ccc;
+  background: #eee;
+  padding: 5px 10px;
+  text-align: center;
+  display: block;
+  margin: 10px;
 }
 .myOrder {
   border-left: 5px solid #2dd36f !important;
 }
 .myNumberCard {
   text-align: center;
+  margin: 0 auto;
+}
+.myNumberCard ion-card {
+  margin-top: -10px;
+  padding: 20px 0;
 }
 .myNumberCard h3 {
   font-size: 1em;
+  margin: 0;
 }
 .myNumberCard h1 {
-  font-size: 15em;
+  font-size: 12em;
   font-weight: bold;
   line-height: 0.8em;
+  margin-top: 0;
+}
+ion-label span.end {
+  position: absolute;
+  right: 20px;
 }
 .myNumberCard h2 {
-  font-size: 3em;
+  font-size: 2em;
   line-height: 0.8em;
 }
 .myNumberCard .name {
   line-height: 1.25em;
+  margin: -10px 0 0;
 }
 .hide {
   display:none;

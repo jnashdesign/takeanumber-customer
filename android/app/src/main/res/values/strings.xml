@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">takeANumber</string>
-    <string name="title_activity_main">takeANumber</string>
-    <string name="package_name">tech.takeanumber.customer</string>
-    <string name="custom_url_scheme">tech.takeanumber.customer</string>
-</resources>

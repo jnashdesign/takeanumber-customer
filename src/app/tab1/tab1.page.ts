@@ -27,6 +27,11 @@ export class Tab1Page {
   public restaurants: any;
   public items = [];
   public presentModalVar;
+  public optInTexts: boolean;
+  public textUpdates: boolean;
+  public textOption: boolean;
+  public textToggle: boolean;
+  public numberSaved: boolean;
 
   // String variables
   public timeStamp: any;
@@ -37,6 +42,7 @@ export class Tab1Page {
   public name: string;
   public status: string;
   public firebaseName: string;
+  public phoneNumber: string;
 
   // Status total arrays
   public waitingCustomers: Number = 0;
@@ -62,12 +68,28 @@ export class Tab1Page {
   }
 
   ionViewWillEnter(){
+    if (localStorage.getItem('optInTexts')){
+      this.optInTexts = JSON.parse(localStorage.getItem('optInTexts'));
+      if (this.optInTexts == true){
+        this.textUpdates = true;
+      }
+    }
+    if (localStorage.getItem('numberSaved')){
+      this.numberSaved = JSON.parse(localStorage.getItem('numberSaved'));
+    }
     this.checkDate();
     this.checkForRequiredInfo();
     this.restaurantLogo = localStorage.getItem('restaurantLogo');
 
   // Set default tab
   this.tab = 'myNumber';
+
+  // Set phone number if in localStorage
+  if (localStorage.getItem('phoneNumber')){
+    this.phoneNumber = localStorage.getItem('phoneNumber')
+  }else{
+    this.phoneNumber = null;
+  }
 
   // Get the current date
   this.getItems(this.getCurrentDate());
@@ -83,7 +105,7 @@ export class Tab1Page {
 
   checkForRequiredInfo(){
     if (!localStorage.getItem('firebaseName')){
-      this.presentToast('Oops!', 'Something went wrong, let\'s try again.');
+      this.presentToast('Oops!', 'A restaurant has to be chosen, let\'s try again.');
       this.router.navigate(['/choose-restaurant']);
     }else {
       this.firebaseName = localStorage.getItem('firebaseName');
@@ -123,7 +145,6 @@ export class Tab1Page {
     let day = d.getDate();
     let year = d.getFullYear();
     let date = month + '-' + day + '-' + year;
-
     return date;
   }
 
@@ -267,15 +288,14 @@ export class Tab1Page {
 
     // Throw error if name is not provided.
     if (!name) {
-      this.presentToast('Oops!', 'Name is required.');
+      this.presentToast('Oops! Name is required.', 'We need a name to add to your number.');
       return;
     }
 
-    localStorage.removeItem('name');
-    localStorage.removeItem('date');
-    localStorage.removeItem('time');
-    localStorage.removeItem('myID');
-    localStorage.removeItem('status');
+    //  Remove storage items 
+    let keysToRemove = ["name", "date","time","myID","status"];
+    keysToRemove.forEach(k =>
+      localStorage.removeItem(k))
 
     let date = this.getCurrentDate();
     let time = this.getTime();
@@ -292,30 +312,33 @@ export class Tab1Page {
         this.numItems = data.length + 1;
       });
       
-      let token;
       let payload;
-      // Check to see if there's a token
-      if (localStorage.getItem('pushToken')){
-        token = localStorage.getItem('pushToken').replace(/['"]+/g, '');
+
+      if (this.optInTexts == true){
         payload = {
           date: date,
           id: this.numItems,
           name: name,
+          phone: this.phoneNumber,
           status: 'waiting',
+          optInTexts: this.optInTexts,
+          text: 'waiting|'+this.phoneNumber,
           time_gotNumber: time,
-          timeStamp: this.timeStamp,
-          token: token
+          timeStamp: this.timeStamp
         }
-      } else {
+      }else{
         payload = {
           date: date,
           id: this.numItems,
           name: name,
+          phone: this.phoneNumber,
           status: 'waiting',
+          optInTexts: this.optInTexts,
           time_gotNumber: time,
           timeStamp: this.timeStamp
         }
       }
+
 
     // Push data to Firebase
     this.afd.object('/restaurants/' + this.firebaseName + '/' + date + '/' + this.timeStamp + '_' + name)
@@ -340,6 +363,9 @@ export class Tab1Page {
     $('.reseveASpotBtn').attr('disabled', true);
     // Change Cancel button to Done
     $('.doneBtn').html('Done');
+    
+    // Return toggle status to default
+    this.textToggle = false;
   }
 
   // Define popup function collecting 
@@ -361,6 +387,70 @@ export class Tab1Page {
 
     // Present the popup
     toast.present();
+  }
+
+  addPhoneNumber(){
+    // Validate number
+    this.validatePhoneNumber();
+    if($('#phoneNumberInput').val()){
+      // If error results from validation, don't opt in
+      if($('#phoneNumberInput').hasClass('error')){
+        return;
+      }else{
+        // Save phone number to storage
+        localStorage.setItem('phoneNumber',$('#phoneNumberInput').val());
+      }
+      // Update opt in variable and storage reference
+      this.optInTexts = true;
+      this.phoneNumber = localStorage.getItem('phoneNumber');
+      localStorage.setItem('optInTexts','true');
+      this.numberSaved = true;
+      localStorage.setItem('numberSaved','true');
+      if (!localStorage.getItem('timeStamp')){
+        return;
+      }else{
+        this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + this.name)
+        .update({
+          phone: this.phoneNumber
+        });
+      }
+    }
+  }
+
+  optInOutTexts(){
+    if (this.textUpdates == true){
+      this.optInTexts = false;
+    }else{
+      this.optInTexts = true;
+    }
+    console.log('textOptions: '+this.optInTexts)
+    localStorage.setItem('optInTexts',JSON.stringify(this.optInTexts));
+
+    if (!localStorage.getItem('timeStamp')){
+      return;
+    }else{
+      this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + this.name)
+      .update({
+        optInTexts: this.optInTexts,
+      });
+    }
+  }
+
+  validatePhoneNumber(){
+    let mobileFormat = /^[1-9]{1}[0-9]{9}$/;
+    let currentValue = $('#phoneNumberInput').val();
+    if(mobileFormat.test(currentValue) == false && currentValue != 10){
+        $('#phoneNumberInput').css('border-color','red').addClass('error');
+    } else{
+        $('#phoneNumberInput').css('border-color','#2ad85b').removeClass('error');
+    }
+    event.preventDefault();
+  }
+
+  numbersOnly(e){
+    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      return false;
+    }
   }
 
   getTime(){
