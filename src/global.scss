@@ -32,7 +32,7 @@
 :root {
   --ion-safe-area-top: 20px;
   --ion-safe-area-bottom: 22px;
-  --ion-color-primary: #299e0e;
+  --ion-color-primary: #4f9b2f;
 }
 html {
   background-image: url(./assets/background.jpg);
@@ -48,10 +48,15 @@ body {
 }
 ion-tab-bar {
   padding-bottom: 0;
+  --ion-color-primary: #4f9b2f;
+}
+ion-content {
+  background: #fff;
 }
 ion-item {
   --border-width: 0;
   --inner-border-width: 0;
+  background: #fff;
 }
 ion-item .item-native {
   padding: 0;
@@ -129,11 +134,11 @@ ion-segment {
   border-style: none;
 }
 ion-segment-button {
-  background: #eee;
+  background: #bbb;
   --border-width:0px;
-  --background-hover: #eee !important;
+  --background-hover: #bbb !important;
   --indicator-color-checked: 0;
-  --background-checked: #eee;  
+  --background-checked: #bbb;  
   border-radius: 0;
   margin-bottom: 0;
   padding-top: 5px;
@@ -144,7 +149,7 @@ ion-segment-button ion-label {
   margin: 0;
 }
 ion-segment-button.segment-button-checked {
-  background: #eee;
+  background: #fff;
   --indicator-color-checked: 0;
   --border-radius: 0;
 }
@@ -159,6 +164,7 @@ ion-button.fullWidth {
   font-size: 1em !important;
 }
 .textSettingsContainer {
+  color: #444 !important;
   border-bottom: 1px solid #ddd;
   background: #fff;
   width: 90%;
@@ -182,6 +188,7 @@ ion-button.fullWidth {
   position: absolute;
   top: 0;
   right: 10px;
+  --ion-color-primary: #4f9b2f;
 }
 .textLogoBtn {
   position: absolute;
@@ -216,6 +223,10 @@ ion-button.fullWidth {
   --background: transparent !important;
   padding: 0;
   margin-bottom: 0px;
+  color:#444;
+}
+input.native-input {
+  color: #444;
 }
 .textSettingsContainer ion-item.item button {
   width: 100%;
@@ -229,11 +240,14 @@ ion-button.fullWidth {
   position: absolute;
   top: 0;
   left: 40px;
+  color:#444;
+  z-index: 99999999999;
 }
 .textSettingsContainer a {
   margin-left: 10px;
   text-decoration: underline;
   cursor: pointer;
+  z-index: 99999999999;
 }
 .noThanks {
   margin-top: 40px;
@@ -248,6 +262,7 @@ ion-button.fullWidth {
   top: 10px;
   left: 0;
   position: absolute;
+  z-index: 99999999999;
 }
 .close {
   position: absolute;
@@ -385,6 +400,7 @@ ion-icon.inputIcon {
   position: absolute;
   top: 5px;
   height: 50px;
+  border-radius: 50%;
 }
 .selectRestaurantIcon {
   width: 25px;
@@ -536,4 +552,56 @@ ion-card.pickRestaurant.selected {
 }
 .pickRestaurant img {
   max-height: 8em;
+}
+@media (prefers-color-scheme: dark) {
+  ion-segment-button {
+    color: #fff;
+    background: #444;
+  }
+  ion-segment-button.segment-button-checked {
+    background: #000 !important;
+  }
+  ion-content {
+    --background: #595959 !important;
+    --background-color: #595959 !important;
+    background-color: #595959 !important;
+  }
+  ion-item, ion-card {
+    --background: #222 !important;
+    --background-color: #222 !important;
+    background-color: #222 !important;
+  }
+  .textSettingsContainer {
+    --background: #777 !important;
+    --background-color: #777 !important;
+    background-color: #777 !important;
+    color: #000 !important;
+    border-color: #000;
+  }
+  .textSettingsContainer ion-item {
+    --background: #777 !important;
+    --background-color: #777 !important;
+    background-color: #777 !important;
+  }
+  .textSettingsContainer h5,
+  .textSettingsContainer p,
+  .textSettingsContainer a {
+    color: #000 !important;
+  }
+  #nameInput, #phoneNumberInput {
+    border: 1px solid #333;
+    padding-left: 10px!important;
+    border-radius: 4px;
+    background: #000;
+    color: #999;
+  }
+  .topBar {
+    --background: #444 !important;
+    --background-color: #444 !important;
+    background-color: #444 !important;
+  }
+  .textToggleTop {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
 }

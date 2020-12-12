@@ -27,7 +27,7 @@
 <ion-toggle class="textToggle" [(ngModel)]="textToggle">
 </ion-toggle>
   <div *ngIf="textToggle" class="textSettingsContainer">
-    <ion-item>
+    <ion-item class="textToggleTop">
       <div class="messageIcons">
         <img style="width:35px;height:35px;margin-right:10px" src="../../assets/text.svg" />
       </div>
@@ -91,8 +91,6 @@
     <div class="milestone step5"></div>
     <div id="currentStatus" class="step1"></div>
   </div>
-</ion-header>
-<ion-header>
   <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="ios">
     <ion-segment-button value="myNumber" checked>
       <ion-label>My Number</ion-label>
@@ -178,7 +176,7 @@
     <ion-card *ngSwitchCase="'myNumber'">
       <div class="needANumber" *ngIf="!timeStamp">
         <ion-item>
-          <h5>Want's your name?</h5>
+          <h5>What's your name?</h5>
         </ion-item>
         <ion-item>
           <ion-input id="nameInput" placeholder="Your Name" type="text" [(ngModel)]="name">
