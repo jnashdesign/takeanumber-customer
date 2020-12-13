@@ -103,6 +103,15 @@ export class Tab1Page {
     }
   }
 
+  async toggleTextOptions(){
+    console.log('toggleTextOptions')
+    if (this.textToggle == true){
+      this.textToggle = false;
+    }else{
+      this.textToggle = true;
+    }
+  }
+
   checkForRequiredInfo(){
     if (!localStorage.getItem('firebaseName')){
       this.presentToast('Oops!', 'A restaurant has to be chosen, let\'s try again.');

@@ -32,7 +32,7 @@
 :root {
   --ion-safe-area-top: 20px;
   --ion-safe-area-bottom: 22px;
-  --ion-color-primary: #4f9b2f;
+  --ion-color-primary: #12ab44;
 }
 html {
   background-image: url(./assets/background.jpg);
@@ -48,7 +48,7 @@ body {
 }
 ion-tab-bar {
   padding-bottom: 0;
-  --ion-color-primary: #4f9b2f;
+  --ion-color-primary: #000;
 }
 ion-content {
   background: #fff;
@@ -65,6 +65,10 @@ ion-card {
   padding: 10px 0;
   box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
 }
+.completeNotice ion-card,
+.readyToOrderNotice ion-card {
+  padding: 10px;
+}
 ion-title {
   font-weight: bold;
   text-align: center;
@@ -80,6 +84,13 @@ ion-label h2 {
 }
 ion-tab-button.tab-selected {
   border-top: 2px solid;
+  border-color: #111;
+  color: #111;
+  background: #fff;
+}
+ion-tab-button {
+  background: #444;
+  color: #fff;
 }
 .listContainer ion-item {
   border-bottom: 1px solid #bbb;
@@ -116,10 +127,9 @@ ion-item-sliding {
   z-index: 99999999;
 }
 button {
-  background: #2ad85b;
+  background: #12ab44;
   color: #fff;
   padding: 15px 30px;
-  border-radius: 10px;
   width: calc(100% - 20px);
   font-size: 1.25em;
   margin: 15px auto;
@@ -177,6 +187,10 @@ ion-button.fullWidth {
   min-height: 160px;
   box-shadow: 3px 0 5px rgba(0, 0, 0, 0.4);
 }
+.textToggleTop {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
 .textToggle {
   position: absolute;
   bottom: 10px;
@@ -188,7 +202,7 @@ ion-button.fullWidth {
   position: absolute;
   top: 0;
   right: 10px;
-  --ion-color-primary: #4f9b2f;
+  --ion-color-primary: #12ab44;
 }
 .textLogoBtn {
   position: absolute;
@@ -206,12 +220,12 @@ ion-button.fullWidth {
 @keyframes pulse {
 	0% {
 		transform: scale(0.95);
-		box-shadow: 0 0 0 0 rgba(42, 216, 91, 0.7);
+		box-shadow: 0 0 0 0 rgba(42, 216, 91, 0.3);
 	}
 
 	70% {
 		transform: scale(1);
-		box-shadow: 0 0 0 5px rgba(42, 216, 91, 0.3);
+		box-shadow: 0 0 0 5px rgba(42, 216, 91, 0.5);
 	}
 
 	100% {
@@ -231,10 +245,11 @@ input.native-input {
 .textSettingsContainer ion-item.item button {
   width: 100%;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 5px;
   margin: 0;
-  font-size: 1em;
+  font-size: 0.85em;
   white-space: nowrap;
+  min-width: 100px;
 }
 .textSettingsContainer h5 {
   position: absolute;
@@ -553,6 +568,15 @@ ion-card.pickRestaurant.selected {
 .pickRestaurant img {
   max-height: 8em;
 }
+.checkTextSettings {
+  cursor: pointer;
+  color: #12ab44;
+  border: 1px solid #12ab44;
+  border-radius: 20px;
+  background: transparent;
+  font-size: 1em;
+  width: 100%;
+}
 @media (prefers-color-scheme: dark) {
   ion-segment-button {
     color: #fff;
@@ -600,8 +624,14 @@ ion-card.pickRestaurant.selected {
     --background-color: #444 !important;
     background-color: #444 !important;
   }
-  .textToggleTop {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+  .checkTextSettings {
+    color: #fff;
+    border: 1px solid #fff;
+  }
+  ion-tab-button.tab-selected {
+    border-top: 2px solid;
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255,255,255,0.5);
   }
 }

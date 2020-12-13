@@ -15,7 +15,7 @@
 </ion-card>
 </div>
 <div *ngIf="textToggle">
-  <div class="overlay"></div>
+  <div (click)="toggleTextOptions()" class="overlay"></div>
 </div>
 <div *ngIf="numberSaved && textUpdates; else optedOut">
   <img class="textLogoBtn" src="../../assets/text.svg">
@@ -38,7 +38,7 @@
         <div>
           <h5>Want text updates? <strong>No</strong></h5>
             <ion-item>
-              <p class="noThanks"><strong>Warning:</strong> Without text updates, you will have to watch this page for order updates.</p>
+              <p style="font-size: 0.7em;color:red;margin-left: 7px;" class="noThanks"><strong>Warning:</strong> Without text updates, you will have to watch this page for order updates.</p>
             </ion-item>
           </div>
       </ng-template>
@@ -176,13 +176,15 @@
     <ion-card *ngSwitchCase="'myNumber'">
       <div class="needANumber" *ngIf="!timeStamp">
         <ion-item>
-          <h5>What's your name?</h5>
+          <h5 style="font-weight: bold; margin-bottom: 1em">Grab a number and get in line!</h5>
         </ion-item>
         <ion-item>
-          <ion-input id="nameInput" placeholder="Your Name" type="text" [(ngModel)]="name">
+          <ion-input id="nameInput" placeholder="Enter Your Name" type="text" [(ngModel)]="name">
           </ion-input>
         </ion-item>
-
+        <ion-item>
+          <button class="checkTextSettings" (click)="toggleTextOptions()">Check text message settings.</button>
+        </ion-item>
         <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
           Get My Number
         </button>
