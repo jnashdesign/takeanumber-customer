@@ -1,17 +1,17 @@
 <div class="readyToOrderNotice hide">
   <ion-card>
   <h3>{{name}}, we are ready to take your order!</h3>
-  <ion-button expand="full" (click)="dismiss()" color="success">
+  <button expand="full" (click)="dismiss()" color="success">
     Got it!
-  </ion-button>
+  </button>
 </ion-card>
 </div>
 <div class="completeNotice hide">
   <ion-card>
   <h3>{{name}}, your order is ready to be picked up!</h3>
-  <ion-button expand="full" (click)="dismiss()" color="success">
+  <button expand="full" (click)="dismiss()" color="success">
     Got it!
-  </ion-button>
+  </button>
 </ion-card>
 </div>
 <div *ngIf="textToggle">
@@ -174,7 +174,7 @@
   </ion-card>
 
     <ion-card *ngSwitchCase="'myNumber'">
-      <div class="needANumber" *ngIf="!timeStamp">
+      <div class="needANumber" *ngIf="!timeStamp; else hasTimeStamp">
         <ion-item>
           <h5 style="font-weight: bold; margin-bottom: 1em">Grab a number and get in line!</h5>
         </ion-item>
@@ -185,16 +185,44 @@
         <ion-item>
           <button class="checkTextSettings" (click)="toggleTextOptions()">Check text message settings.</button>
         </ion-item>
+        <div *ngIf="openStatus == 'takingOrders'; else notTakingOrders">
         <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
           Get My Number
         </button>
+        </div>
+        <ng-template #notTakingOrders>
+          <div *ngIf="openStatus == 'notTakingOrders'; else soldOut">
+            <button class="reseveASpotBtn" expand="full" color="secondary" disabled>
+              Not Taking Orders
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #soldOut>
+          <div *ngIf="openStatus == 'soldOut'; else closed">
+            <button class="reseveASpotBtn" expand="full" color="secondary" disabled>
+              Sold Out
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #closed>
+          <div *ngIf="openStatus == 'closed'; else open">
+            <button class="reseveASpotBtn" expand="full" color="secondary" disabled>
+              Currently Closed
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #open>
+          <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
+            Get My Number
+          </button>
+        </ng-template>
       </div>
 
-      <div *ngIf="timeStamp">
+      <ng-template #hasTimeStamp>
         <div *ngIf="status == 'complete'; else incomplete">
-          <ion-button (click)="getNewNumber()" expand="full">
+          <button (click)="getNewNumber()" expand="full">
             Get a new number
-          </ion-button>
+          </button>
           <div class="myNumberCard">
             <h2 class="name">Your order has been completed!</h2>
           </div>   
@@ -209,7 +237,7 @@
             <h3><span class="date">{{date}}</span> @<span class="time">{{time}}</span></h3>
           </div>  
         </ng-template>
-      </div>
+      </ng-template>
     </ion-card>
   </div>
 </ion-content>

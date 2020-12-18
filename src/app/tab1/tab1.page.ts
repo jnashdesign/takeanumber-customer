@@ -20,6 +20,7 @@ export class Tab1Page {
   public restaurantName: string;
   public description: string;
   public restaurantLogo: string;
+  public openStatus: string;
 
   // Array variables
   public itemList: any;
@@ -68,12 +69,8 @@ export class Tab1Page {
   }
 
   ionViewWillEnter(){
-    if (localStorage.getItem('optInTexts')){
-      this.optInTexts = JSON.parse(localStorage.getItem('optInTexts'));
-      if (this.optInTexts == true){
-        this.textUpdates = true;
-      }
-    }
+    this.checkIfUpdated();
+
     if (localStorage.getItem('numberSaved')){
       this.numberSaved = JSON.parse(localStorage.getItem('numberSaved'));
     }
@@ -101,6 +98,19 @@ export class Tab1Page {
       let nameInput = localStorage.getItem('name');
       $('#nameInput').val(nameInput);
     }
+
+    this.textUpdates = this.optInTexts;
+
+    if (this.textUpdates == true){
+      this.optInTexts = true;
+      localStorage.setItem('optInTexts','true');
+    }else{
+      this.optInTexts = false;
+      localStorage.setItem('optInTexts','false');
+    }
+    console.log('this.optInTexts: '+this.optInTexts);
+    this.setData(this.firebaseName);
+
   }
 
   async toggleTextOptions(){
@@ -112,13 +122,34 @@ export class Tab1Page {
     }
   }
 
+  checkIfUpdated(){
+    if (localStorage.getItem('lastUpdate') !== '12132020'){
+      localStorage.clear();
+      localStorage.setItem('lastUpdate','12132020');
+    }else{
+      return;
+    }
+  }
+
+  checkOptInTexts(){
+    console.log("this.checkOptInTexts")
+    if (localStorage.getItem('optInTexts')){
+      this.optInTexts = JSON.parse(localStorage.getItem('optInTexts'));
+      if (this.optInTexts == true){
+        this.textUpdates = true;
+      }
+    }else{
+      this.optInTexts = false;
+      localStorage.setItem('optInTexts','false');
+    }
+  }
+
   checkForRequiredInfo(){
     if (!localStorage.getItem('firebaseName')){
-      this.presentToast('Oops!', 'A restaurant has to be chosen, let\'s try again.');
+      this.presentToast('Choose A Restaurant', 'A restaurant has to be chosen, let\'s try again.');
       this.router.navigate(['/choose-restaurant']);
     }else {
       this.firebaseName = localStorage.getItem('firebaseName');
-      this.setData(this.firebaseName);
     }
   }
 
@@ -143,7 +174,24 @@ export class Tab1Page {
   setData(firebaseName){
     this.afd.object('restaurants/' + firebaseName + '/client_info')
     .valueChanges().subscribe((res:any) => {
-      this.restaurantLogo = res.restaurantLogo.replace(/['"]+/g, '');
+      if (res.openStatus){
+        this.openStatus = res.openStatus;
+        if (this.openStatus == 'open'){
+          localStorage.setItem('openStatus','Open');
+        }else if (this.openStatus == 'closed'){
+          localStorage.setItem('openStatus','Closed');
+        }else if (this.openStatus == 'notTakingOrders'){
+          localStorage.setItem('openStatus','Not Taking Orders');
+        }else if (this.openStatus == 'soldOut'){
+          localStorage.setItem('openStatus','Sold Out');
+        }else{
+          localStorage.setItem('openStatus','Open');
+        }
+
+      }
+      if (res.restaurantLogo){
+        this.restaurantLogo = res.restaurantLogo.replace(/['"]+/g, '');
+      }
     });
   }
 
@@ -323,7 +371,9 @@ export class Tab1Page {
       
       let payload;
 
-      if (this.optInTexts == true){
+      console.log('this.optInTexts: '+this.optInTexts);
+
+      if (this.numberSaved == true && this.optInTexts == true){
         payload = {
           date: date,
           id: this.numItems,

@@ -1,8 +1,26 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Settings <ion-icon class="close" name="close-outline" (click)="dismiss()"></ion-icon></ion-title>
+    <ion-title>Get Text Updates! <ion-icon class="close" name="close-outline" (click)="dismiss()"></ion-icon></ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="8" style="margin: 0 auto;display:block;">
+        <ion-slides pager="false" [options]="slideOptsOne" #slideWithNav
+          (ionSlideDidChange)="SlideDidChange(sliderOne,slideWithNav)">
+          <ion-slide *ngFor="let s of sliderOne.slidesItems">
+            <img src="../../assets/slides/step{{s.id}}.jpg">
+          </ion-slide>
+        </ion-slides>
+        <ion-item>
+          <ion-checkbox color="primary" mode="ios" [(ngModel)]="dontShowAgain" (click)="dontShowAgainFunc()"></ion-checkbox>
+          <ion-label>Don't show me this again.</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
 </ion-content>

@@ -42,7 +42,12 @@ html {
 body {
   background: transparent;
 }
-
+.center {
+  text-align: center;
+  margin: 0 auto;
+  display:block;
+  width: 100%;
+}
 #numErrorMsg {
   color: red;
 }
@@ -83,14 +88,14 @@ ion-label h2 {
   padding: 10px;
 }
 ion-tab-button.tab-selected {
-  border-top: 2px solid;
+  border-top: 4px solid;
   border-color: #111;
   color: #111;
   background: #fff;
 }
 ion-tab-button {
-  background: #444;
-  color: #fff;
+  background: #fff;
+  color: #444;
 }
 .listContainer ion-item {
   border-bottom: 1px solid #bbb;
@@ -116,6 +121,9 @@ ion-item-sliding {
 .account-info ion-input {
   margin-top: 10px;
   text-align: right;
+}
+.addressInfo div {
+  margin-top: -1em;
 }
 .overlay {
   width: 100%;
@@ -439,7 +447,7 @@ ion-icon.inputIcon {
   box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
 }
 .account-info ion-item {
-  border-bottom: 1px solid #ddd;
+  width:100%;
 }
 .contactBtns a {
   text-decoration: none;
@@ -577,6 +585,9 @@ ion-card.pickRestaurant.selected {
   font-size: 1em;
   width: 100%;
 }
+.reseveASpotBtn:disabled {
+  background-color: #444;
+}
 @media (prefers-color-scheme: dark) {
   ion-segment-button {
     color: #fff;
@@ -628,10 +639,12 @@ ion-card.pickRestaurant.selected {
     color: #fff;
     border: 1px solid #fff;
   }
+  ion-tab-button {
+    background: #222 !important;
+    color:#ddd;
+  }
   ion-tab-button.tab-selected {
-    border-top: 2px solid;
-    border-color: #fff;
-    color: #fff;
-    background: rgba(255,255,255,0.5);
+    border-color: #12ab44;
+    color: #12ab44;
   }
 }

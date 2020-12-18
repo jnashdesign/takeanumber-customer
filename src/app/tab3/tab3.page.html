@@ -7,10 +7,26 @@
 
 <ion-content class="account-info" [fullscreen]="true" padding>
   <ion-card padding>
-    <img style="border-radius: 50%;max-width:50%;margin:0 auto;display:block;" src="{{restaurantLogo}}"/>
+    <img style="border-radius: 50%;max-width:50%;" class="center" src="{{restaurantLogo}}"/>
     <button class="checkStatus" expand="full" color="secondary" routerLink="/tabs/tab1/">
       Get A Number
     </button>
+    <ion-grid class="addressInfo">
+     <ion-row>
+        <ion-col>
+              <div>
+                <p class="center"><strong>Currently: </strong>{{openStatusTxt}}</p>          
+              </div>
+              <div>
+                <p class="center"><strong>Address: </strong> {{address}}</p>
+              </div>
+              <div>
+                <p class="center"><strong>Hours: </strong>{{hours}}</p>
+              </div>
+              </ion-col>
+      </ion-row>
+  </ion-grid>
+  <ion-grid>
     <ion-row>
       <ion-col class="contactBtns">
         <div *ngIf="restaurantSite"><a target="_blank" href="{{restaurantSite}}"><strong>Website</strong></a></div>
@@ -30,8 +46,11 @@
         </a>
       </ion-col>
     </ion-row>
+  </ion-grid>
+  <div>
     <p *ngIf="description1"><strong>Description:</strong><br>{{description1}}</p>
     <p *ngIf="description2">{{description2}}</p>
     <p *ngIf="description3">{{description3}}</p>
+  </div>
   </ion-card>
 </ion-content>

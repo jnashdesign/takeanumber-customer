@@ -26,6 +26,8 @@ export class ChooseRestaurantPage {
   public facebook;
   public instagram;
   public twitter;
+  public hours;
+  public address;
 
   constructor(
     public afd: AngularFireDatabase,
@@ -139,6 +141,16 @@ export class ChooseRestaurantPage {
 
       this.restaurantLogo = res.restaurantLogo;
       localStorage.setItem('restaurantLogo', res.restaurantLogo);
+
+      if (res.address){
+        this.address = res.address;
+        localStorage.setItem('address',res.address);
+      }
+
+      if (res.hours){
+        this.hours = res.hours;
+        localStorage.setItem('hours',res.hours);
+      }
 
       // Check for website
       if (res.site){
