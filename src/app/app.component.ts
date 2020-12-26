@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import * as firebase from 'firebase';
 import { environment } from '../environments/environment';
 import { FcmService } from './services/fcm.service';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private fcmService: FcmService
+    private fcmService: FcmService,
+    private keyboard: Keyboard
   ) {
     this.initializeApp();
   }
@@ -35,6 +37,7 @@ export class AppComponent {
         this.fcmService.initPush();  
       }, 300)
     });
+    this.keyboard.disableScroll(true)
     firebase.initializeApp(environment.firebaseConfig);
   }
 }

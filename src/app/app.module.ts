@@ -6,6 +6,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Badge } from '@ionic-native/badge/ngx';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,10 +34,11 @@ import { environment } from '../environments/environment';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-    AngularFireStorageModule  
+    AngularFireStorageModule
   ],
   providers: [
     StatusBar,
+    Keyboard,
     Badge,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

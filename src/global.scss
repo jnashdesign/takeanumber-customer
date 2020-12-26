@@ -57,6 +57,7 @@ ion-tab-bar {
 }
 ion-content {
   background: #fff;
+  z-index: 999;
 }
 ion-item {
   --border-width: 0;
@@ -300,6 +301,7 @@ input.native-input {
   background-position: center;
   background-size: cover;
   min-height: 100px;
+  z-index: 99999;
 }
 .statusBar {
   width: 95%;
@@ -384,6 +386,7 @@ p {
   padding-top: 20px;
   min-height: 60px;
   background: #fff;
+  z-index: 9999999;
 }
 #nameInput, #phoneNumberInput {
   border: 1px solid #ddd;
@@ -438,7 +441,7 @@ ion-icon.inputIcon {
   max-height: 85px;
   position: absolute;
   left: calc(50% - 40px);
-  z-index: 999999;
+  z-index: 99999999999;
   top: -5px;
   display: block;
   background: #fff;
@@ -483,6 +486,9 @@ ion-icon.inputIcon {
 ion-label span.end {
   position: absolute;
   right: 20px;
+}
+.label-floating.md {
+  padding-bottom: 10px !important;
 }
 .myNumberCard h2 {
   font-size: 2em;

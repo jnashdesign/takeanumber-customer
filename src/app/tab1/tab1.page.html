@@ -14,102 +14,40 @@
   </button>
 </ion-card>
 </div>
-<div *ngIf="textToggle">
-  <div (click)="toggleTextOptions()" class="overlay"></div>
-</div>
-<div *ngIf="numberSaved && textUpdates; else optedOut">
-  <img class="textLogoBtn" src="../../assets/text.svg">
-</div>
-<ng-template #optedOut>
-  <img class="textLogoBtn" src="../../assets/noText.svg">
-</ng-template>
-
-<ion-toggle class="textToggle" [(ngModel)]="textToggle">
-</ion-toggle>
-  <div *ngIf="textToggle" class="textSettingsContainer">
-    <ion-item class="textToggleTop">
-      <div class="messageIcons">
-        <img style="width:35px;height:35px;margin-right:10px" src="../../assets/text.svg" />
-      </div>
-      <div *ngIf="textUpdates; else optedOut">
-        <h5>Want text updates? <strong>Yes</strong></h5>
-      </div>
-      <ng-template #optedOut>
-        <div>
-          <h5>Want text updates? <strong>No</strong></h5>
-            <ion-item>
-              <p style="font-size: 0.7em;color:red;margin-left: 7px;" class="noThanks"><strong>Warning:</strong> Without text updates, you will have to watch this page for order updates.</p>
-            </ion-item>
-          </div>
-      </ng-template>
-      <ion-toggle [(ngModel)]="textUpdates" slot="end" mode="ios" (click)="optInOutTexts()">
-      </ion-toggle>
-    </ion-item>
-    <div *ngIf="textUpdates">
-      <ion-grid>
-        <ion-row style="margin-top: -10px">
-          <ion-col size="8">
-            <ion-item >
-              <ion-input mode="ios" id="phoneNumberInput" type="text" placeholder="My Number" (keypress)="numbersOnly($event)" [(ngModel)]="phoneNumber">
-              </ion-input>
-            </ion-item>
-            <div *ngIf="!numberSaved; else updateWarning">
-              <p style="font-size: 0.7em;color:red;margin-left: 7px;"><strong>Warning:</strong> Number not saved.</p>  
-            </div>
-            <ng-template #updateWarning>
-              <div>
-                <p style="font-size: 0.7em;margin-left: 7px;">Your number is saved!</p>
-              </div>
-            </ng-template>
-          </ion-col>
-          <ion-col size="4">
-            <ion-item>
-              <div *ngIf="!numberSaved; else update">
-                <button (click)="addPhoneNumber()">Save</button>
-              </div>
-              <ng-template #update>
-                <button (click)="addPhoneNumber()">Update</button>
-              </ng-template>
-            </ion-item>
-          </ion-col>  
-        </ion-row>
-      </ion-grid>
-    </div>
-  </div>
 
 <a href="http://takeanumber.tech" target="_blank"><img class="appLogo" src="../../assets/takeANumber.png" end/></a>
 <ion-header class="topBar">
   <img class="selectRestaurantIcon" [routerLink]="['/choose-restaurant/']" src="../../assets/hamburger-menu.svg" start />
   <img class="restaurantLogo" src="{{restaurantLogo}}" end/>
 </ion-header>
-<ion-header class="statusHeader">
-  <div class="statusBar">
-    <div class="milestone step1"></div>
-    <div class="milestone step2"></div>
-    <div class="milestone step3"></div>
-    <div class="milestone step4"></div>
-    <div class="milestone step5"></div>
-    <div id="currentStatus" class="step1"></div>
-  </div>
-  <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="ios">
-    <ion-segment-button value="myNumber" checked>
-      <ion-label>My Number</ion-label>
-      <ion-icon name="duplicate"></ion-icon>
-    </ion-segment-button>
-
-    <ion-segment-button value="waiting" id="waitingListSegment">
-      <ion-label>Waiting ({{waitingCustomers}})</ion-label>
-      <ion-icon name="alarm"></ion-icon>
-    </ion-segment-button>
-
-    <ion-segment-button value="in-progress" id="inProgressOrderSegment">
-      <ion-label>In Progress ({{inProgressOrders}})</ion-label>
-      <ion-icon name="restaurant"></ion-icon>
-    </ion-segment-button>
-  </ion-segment>
-</ion-header>
 
 <ion-content padding [fullscreen]="true">
+  <ion-header class="statusHeader">
+    <div class="statusBar">
+      <div class="milestone step1"></div>
+      <div class="milestone step2"></div>
+      <div class="milestone step3"></div>
+      <div class="milestone step4"></div>
+      <div class="milestone step5"></div>
+      <div id="currentStatus" class="step1"></div>
+    </div>
+    <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="ios">
+      <ion-segment-button value="myNumber" checked>
+        <ion-label>My Number</ion-label>
+        <ion-icon name="duplicate"></ion-icon>
+      </ion-segment-button>
+  
+      <ion-segment-button value="waiting" id="waitingListSegment">
+        <ion-label>Waiting ({{waitingCustomers}})</ion-label>
+        <ion-icon name="alarm"></ion-icon>
+      </ion-segment-button>
+  
+      <ion-segment-button value="in-progress" id="inProgressOrderSegment">
+        <ion-label>In Progress ({{inProgressOrders}})</ion-label>
+        <ion-icon name="restaurant"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-header>
   <div [ngSwitch]="tab">
     <ion-card *ngSwitchCase="'waiting'" class="waitingTab">
       <ion-item *ngIf="waitingCustomers < 1">
@@ -176,17 +114,31 @@
     <ion-card *ngSwitchCase="'myNumber'">
       <div class="needANumber" *ngIf="!timeStamp; else hasTimeStamp">
         <ion-item>
-          <h5 style="font-weight: bold; margin-bottom: 1em">Grab a number and get in line!</h5>
+          <div><span style="font-weight: bold;font-size:1.2em">Grab a number and get in line!</span><br/>
+          <span style="font-size: 0.8em;">All we need is a name and a number.</span></div>
         </ion-item>
-        <ion-item>
-          <ion-input id="nameInput" placeholder="Enter Your Name" type="text" [(ngModel)]="name">
-          </ion-input>
-        </ion-item>
-        <ion-item>
-          <button class="checkTextSettings" (click)="toggleTextOptions()">Check text message settings.</button>
-        </ion-item>
+        <ion-grid style="margin-top: -1em">
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="floating">Your Name</ion-label>
+                <ion-input id="nameInput" placeholder="Enter Your Name" type="text" [(ngModel)]="name">
+                </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Your Number</ion-label>
+                <ion-input mode="ios" id="phoneNumberInput" type="text" placeholder="My Number" (keypress)="numbersOnly($event)" [(ngModel)]="phoneNumber">
+                </ion-input>
+              </ion-item> 
+              <ion-item>
+                <ion-checkbox slot="start" [(ngModel)]="agreeToTerms" mode="android"></ion-checkbox>
+                <p style="font-size: 0.7em;">By providing your phone number you authorize TAN to send SMS text messages to provide order and truck info.</p>
+              </ion-item>   
+            </ion-col>
+          </ion-row>
+        </ion-grid>
         <div *ngIf="openStatus == 'takingOrders'; else notTakingOrders">
-        <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
+        <button class="reseveASpotBtn" expand="full" (click)="validateInfo()" color="secondary">
           Get My Number
         </button>
         </div>
@@ -212,7 +164,7 @@
           </div>
         </ng-template>
         <ng-template #open>
-          <button class="reseveASpotBtn" expand="full" (click)="addItem()" color="secondary">
+          <button class="reseveASpotBtn" expand="full" (click)="validateInfo()" color="secondary">
             Get My Number
           </button>
         </ng-template>

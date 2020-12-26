@@ -28,11 +28,11 @@ export class Tab1Page {
   public restaurants: any;
   public items = [];
   public presentModalVar;
-  public optInTexts: boolean;
   public textUpdates: boolean;
   public textOption: boolean;
   public textToggle: boolean;
   public numberSaved: boolean;
+  public agreeToTerms: boolean;
 
   // String variables
   public timeStamp: any;
@@ -99,16 +99,6 @@ export class Tab1Page {
       $('#nameInput').val(nameInput);
     }
 
-    this.textUpdates = this.optInTexts;
-
-    if (this.textUpdates == true){
-      this.optInTexts = true;
-      localStorage.setItem('optInTexts','true');
-    }else{
-      this.optInTexts = false;
-      localStorage.setItem('optInTexts','false');
-    }
-    console.log('this.optInTexts: '+this.optInTexts);
     this.setData(this.firebaseName);
 
   }
@@ -128,19 +118,6 @@ export class Tab1Page {
       localStorage.setItem('lastUpdate','12132020');
     }else{
       return;
-    }
-  }
-
-  checkOptInTexts(){
-    console.log("this.checkOptInTexts")
-    if (localStorage.getItem('optInTexts')){
-      this.optInTexts = JSON.parse(localStorage.getItem('optInTexts'));
-      if (this.optInTexts == true){
-        this.textUpdates = true;
-      }
-    }else{
-      this.optInTexts = false;
-      localStorage.setItem('optInTexts','false');
     }
   }
 
@@ -337,18 +314,51 @@ export class Tab1Page {
     }
   }
 
-  addItem() {
-    this.checkForRequiredInfo();
+  numbersOnly(e){
+    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+      return false;
+    }
+  }
 
+  validateInfo(){
     // Get customer name field input
     let name: string = $('#nameInput').val();
 
+    console.log(name);
     // Throw error if name is not provided.
     if (!name) {
       this.presentToast('Oops! Name is required.', 'We need a name to add to your number.');
-      return;
+    }else{
+      this.validatePhoneNumber(name);
     }
+  }
 
+  validatePhoneNumber(name){
+    let mobileFormat = /^[1-9]{1}[0-9]{9}$/;
+    let currentValue = $('#phoneNumberInput').val();
+    if(mobileFormat.test(currentValue) == false && currentValue != 10){
+        $('#phoneNumberInput').css('border-color','red').addClass('error');
+        this.presentToast('Oops! Number is required.', 'There seems to be an issue with your phone number.');
+        return;
+    } else{
+        $('#phoneNumberInput').css('border-color','#2ad85b').removeClass('error');
+        // Save phone number to storage
+        localStorage.setItem('phoneNumber',$('#phoneNumberInput').val());
+        // Update opt in variable and storage reference
+        this.phoneNumber = localStorage.getItem('phoneNumber');
+        this.numberSaved = true;
+        localStorage.setItem('numberSaved','true');
+        if (this.agreeToTerms !== true){
+          this.presentToast('Agree to Terms.', 'You have to agree to receive messages.');
+        }else{
+          localStorage.setItem('agreeToTerms','true');
+          this.addItem(name);
+        }
+    }
+  }
+
+  addItem(name) {
+    this.checkForRequiredInfo();
     //  Remove storage items 
     let keysToRemove = ["name", "date","time","myID","status"];
     keysToRemove.forEach(k =>
@@ -368,31 +378,16 @@ export class Tab1Page {
       .subscribe(data => {
         this.numItems = data.length + 1;
       });
-      
-      let payload;
 
-      console.log('this.optInTexts: '+this.optInTexts);
-
-      if (this.numberSaved == true && this.optInTexts == true){
+    let payload;
+      if (this.numberSaved == true && this.agreeToTerms == true){
         payload = {
           date: date,
           id: this.numItems,
           name: name,
           phone: this.phoneNumber,
           status: 'waiting',
-          optInTexts: this.optInTexts,
           text: 'waiting|'+this.phoneNumber,
-          time_gotNumber: time,
-          timeStamp: this.timeStamp
-        }
-      }else{
-        payload = {
-          date: date,
-          id: this.numItems,
-          name: name,
-          phone: this.phoneNumber,
-          status: 'waiting',
-          optInTexts: this.optInTexts,
           time_gotNumber: time,
           timeStamp: this.timeStamp
         }
@@ -446,70 +441,6 @@ export class Tab1Page {
 
     // Present the popup
     toast.present();
-  }
-
-  addPhoneNumber(){
-    // Validate number
-    this.validatePhoneNumber();
-    if($('#phoneNumberInput').val()){
-      // If error results from validation, don't opt in
-      if($('#phoneNumberInput').hasClass('error')){
-        return;
-      }else{
-        // Save phone number to storage
-        localStorage.setItem('phoneNumber',$('#phoneNumberInput').val());
-      }
-      // Update opt in variable and storage reference
-      this.optInTexts = true;
-      this.phoneNumber = localStorage.getItem('phoneNumber');
-      localStorage.setItem('optInTexts','true');
-      this.numberSaved = true;
-      localStorage.setItem('numberSaved','true');
-      if (!localStorage.getItem('timeStamp')){
-        return;
-      }else{
-        this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + this.name)
-        .update({
-          phone: this.phoneNumber
-        });
-      }
-    }
-  }
-
-  optInOutTexts(){
-    if (this.textUpdates == true){
-      this.optInTexts = false;
-    }else{
-      this.optInTexts = true;
-    }
-    console.log('textOptions: '+this.optInTexts)
-    localStorage.setItem('optInTexts',JSON.stringify(this.optInTexts));
-
-    if (!localStorage.getItem('timeStamp')){
-      return;
-    }else{
-      this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + this.name)
-      .update({
-        optInTexts: this.optInTexts,
-      });
-    }
-  }
-
-  validatePhoneNumber(){
-    let mobileFormat = /^[1-9]{1}[0-9]{9}$/;
-    let currentValue = $('#phoneNumberInput').val();
-    if(mobileFormat.test(currentValue) == false && currentValue != 10){
-        $('#phoneNumberInput').css('border-color','red').addClass('error');
-    } else{
-        $('#phoneNumberInput').css('border-color','#2ad85b').removeClass('error');
-    }
-    event.preventDefault();
-  }
-
-  numbersOnly(e){
-    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-      return false;
-    }
   }
 
   getTime(){
@@ -628,6 +559,9 @@ export class Tab1Page {
     this.timeStamp = localStorage.getItem('timeStamp')
     this.status = localStorage.getItem('status');
     this.date = localStorage.getItem('date');
+    if (localStorage.getItem('agreeToTerms')){
+      this.agreeToTerms = JSON.parse(localStorage.getItem('agreeToTerms'));
+    }
   }
 
   dismiss(){
