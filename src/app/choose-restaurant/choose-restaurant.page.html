@@ -8,7 +8,7 @@
   <div>
     <ion-list>
       <div *ngFor="let restaurant of restaurants">
-          <ion-card *ngIf="restaurant.client_info.status !== 'inactive'" (click)="selectRestaurant(restaurant.client_info.firebaseName, restaurant.client_info.restaurantLogo)" class="pickRestaurant">
+          <ion-card *ngIf="restaurant.client_info.status == 'active'" (click)="selectRestaurant(restaurant.client_info.firebaseName, restaurant.client_info.restaurantLogo)" class="pickRestaurant">
             <img src="{{restaurant.client_info.restaurantLogo}}"/>
             <p><strong>{{restaurant.client_info.restaurantName}}</strong></p>
           </ion-card>

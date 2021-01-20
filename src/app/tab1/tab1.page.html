@@ -113,14 +113,11 @@
 
     <ion-card *ngSwitchCase="'myNumber'">
       <div class="needANumber" *ngIf="!timeStamp; else hasTimeStamp">
-        <ion-item>
-          <div><span style="font-weight: bold;font-size:1.2em">Grab a number and get in line!</span><br/>
-          <span style="font-size: 0.8em;">All we need is a name and a number.</span></div>
-        </ion-item>
         <ion-grid style="margin-top: -1em">
           <ion-row>
             <ion-col>
               <ion-item>
+                <span style="font-weight: bold;font-size:1.2em;margin-bottom: -10px;">Grab a number and get in line!</span>
                 <ion-label position="floating">Your Name</ion-label>
                 <ion-input id="nameInput" placeholder="Enter Your Name" type="text" [(ngModel)]="name">
                 </ion-input>

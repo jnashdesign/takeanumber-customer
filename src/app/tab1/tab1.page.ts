@@ -122,7 +122,7 @@ export class Tab1Page {
   }
 
   checkForRequiredInfo(){
-    if (!localStorage.getItem('firebaseName')){
+    if (!localStorage.getItem('firebaseName') || localStorage.getItem('firebaseName') == 'null'){
       this.presentToast('Choose A Restaurant', 'A restaurant has to be chosen, let\'s try again.');
       this.router.navigate(['/choose-restaurant']);
     }else {
@@ -153,6 +153,7 @@ export class Tab1Page {
     .valueChanges().subscribe((res:any) => {
       if (res.openStatus){
         this.openStatus = res.openStatus;
+        // this.openStatus = 'open';
         if (this.openStatus == 'open'){
           localStorage.setItem('openStatus','Open');
         }else if (this.openStatus == 'closed'){
@@ -396,7 +397,17 @@ export class Tab1Page {
 
     // Push data to Firebase
     this.afd.object('/restaurants/' + this.firebaseName + '/' + date + '/' + this.timeStamp + '_' + name)
-    .update(payload);      
+    .update(payload);
+
+    let userInfo = {
+      lastActiveDate: date,
+      lastActiveTime: time,
+      name: this.name,
+      phone: this.phoneNumber
+    }
+    
+    this.afd.object('/users/customers/' + this.phoneNumber)
+    .update(userInfo);
 
     this.name = name;
     localStorage.setItem('name', this.name);
