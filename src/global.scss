@@ -121,7 +121,6 @@ ion-item-sliding {
 }
 .account-info ion-input {
   margin-top: 10px;
-  text-align: right;
 }
 .addressInfo div {
   margin-top: -1em;
@@ -146,6 +145,10 @@ button {
 }
 button.cancel {
   background: #fb0929;
+}
+.secondaryAction {
+  border-radius: 20px;
+  background-color: #222;
 }
 ion-segment {
   width: calc(100% + 10px);
@@ -388,11 +391,19 @@ p {
   background: #fff;
   z-index: 9999999;
 }
-#nameInput, #phoneNumberInput {
+#phoneNumberInput, #nameInput, .loginInput {
   border: 1px solid #ddd;
-  padding-left: 10px !important;
+  padding-left: 5px !important;
   border-radius: 4px;
+  text-align:left;
 }
+ion-input input {
+  --padding-start: 10px;
+}
+ion-tab-button ion-icon {  
+  font-size: 1.75em;
+}
+
 ion-icon.inputIcon {
   position: absolute;
   right: 20px;
@@ -590,6 +601,9 @@ ion-card.pickRestaurant.selected {
   background: transparent;
   font-size: 1em;
   width: 100%;
+}
+.reseveASpotBtn {
+  margin-top: -10px;
 }
 .reseveASpotBtn:disabled {
   background-color: #444;
