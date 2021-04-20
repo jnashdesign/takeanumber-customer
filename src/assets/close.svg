@@ -3,9 +3,8 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 392 336" style="enable-background:new 0 0 392 336;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:#888888;}
+	.st0{fill:#FFFFFF;}
 </style>
-<rect x="21.8" y="28.7" class="st0" width="348.5" height="54.2"/>
-<rect x="21.8" y="136.9" class="st0" width="348.5" height="54.2"/>
-<rect x="21.8" y="245.2" class="st0" width="348.5" height="54.2"/>
+<rect x="21.8" y="139.2" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -60.1905 187.3489)" class="st0" width="348.5" height="54.2"/>
+<rect x="168.9" y="-7.9" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -60.1905 187.3489)" class="st0" width="54.2" height="348.5"/>
 </svg>

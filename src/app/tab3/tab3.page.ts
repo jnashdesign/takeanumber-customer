@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 declare var $: any;
 
@@ -31,6 +31,7 @@ export class Tab3Page {
   constructor(
     public afd: AngularFireDatabase,
     public router: Router,
+    private menu: MenuController,
     public plt: Platform) {
       this.plt.ready().then(() => {
               this.setData();
@@ -38,11 +39,11 @@ export class Tab3Page {
     }
 
     ionViewWillEnter(){
-      if (!localStorage.getItem('firebaseName')){
-        this.router.navigate(['/choose-restaurant']);
-      }else {
+      // if (!localStorage.getItem('firebaseName')){
+      //   this.router.navigate(['/choose-restaurant']);
+      // }else {
         this.firebaseName = localStorage.getItem('firebaseName');
-      }
+      // }
       setTimeout(() => {
         this.setData();
        }, 500);
@@ -53,6 +54,11 @@ export class Tab3Page {
         $('ion-button.checkStatus').text('Get A Number')
        }
        this.getRestaurantData();
+    }
+
+    openFirst() {
+      this.menu.enable(true, 'first');
+        this.menu.toggle('first');
     }
 
     getRestaurantData(){

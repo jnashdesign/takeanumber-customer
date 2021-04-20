@@ -140,6 +140,7 @@ button {
   padding: 15px 30px;
   width: calc(100% - 20px);
   font-size: 1.25em;
+  border-radius: 8px;
   margin: 15px auto;
   display: block;
 }
@@ -439,6 +440,9 @@ ion-icon.inputIcon {
   height: 50px;
   border-radius: 50%;
 }
+.sideMenu ion-item:first-child {
+  margin-top: 100px;
+}
 .selectRestaurantIcon {
   width: 25px;
   z-index: 999;
@@ -446,6 +450,7 @@ ion-icon.inputIcon {
   top: 5px;
   height: 50px;
   right: 20px;
+  cursor: pointer;
 }
 .appLogo {
   max-width: 85px;

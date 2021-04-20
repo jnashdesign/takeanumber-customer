@@ -1,3 +1,30 @@
 <ion-app>
+  <ion-menu side="end" menuId="first" contentId="main">
+    <ion-content>
+      <ion-list class="sideMenu">
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Pages</ion-title>
+            <img class="selectRestaurantIcon" (click)="togglefirst()" src="../../assets/close.svg" start />
+          </ion-toolbar>
+        </ion-header>        
+        <ion-item [routerLink]="['/tabs/tab1/']" (click)="togglefirst()">
+          <ion-icon style="margin-right: 10px;" name="albums"></ion-icon>
+          <strong>Order Info</strong></ion-item>
+        <ion-item [routerLink]="['/tabs/tab2/']" (click)="togglefirst()">
+          <ion-icon style="margin-right: 10px;" name="reader"></ion-icon>
+          <strong>Menu</strong></ion-item>
+        <ion-item [routerLink]="['/tabs/tab3/']" (click)="togglefirst()">
+          <ion-icon style="margin-right: 10px;" name="list"></ion-icon>
+          <strong>Restaurant Info</strong></ion-item>
+        <!-- <ion-item [routerLink]="['/choose-restaurant/']" (click)="togglefirst()">
+          <ion-icon style="margin-right: 10px;" name="navigate"></ion-icon>
+          <strong>Choose Restaurant</strong></ion-item> -->
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  
+  <ion-router-outlet id="main"></ion-router-outlet>
+
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

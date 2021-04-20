@@ -1,4 +1,4 @@
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Component } from '@angular/core';
@@ -18,6 +18,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private fcmService: FcmService,
+    private menu: MenuController,
     private keyboard: Keyboard
   ) {
     this.initializeApp();
@@ -40,4 +41,9 @@ export class AppComponent {
     this.keyboard.disableScroll(true)
     firebase.initializeApp(environment.firebaseConfig);
   }
+  togglefirst() {
+    this.menu.enable(true, 'first');
+      this.menu.toggle('first');
+  }
+
 }

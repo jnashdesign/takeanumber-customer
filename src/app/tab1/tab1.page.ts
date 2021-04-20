@@ -1,11 +1,10 @@
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Storage } from '@ionic/storage';
-import { ModalController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController, MenuController } from '@ionic/angular';
 import { Tab2Page } from '../tab2/tab2.page';
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
-import { FcmService } from '../services/fcm.service';
+// import { FcmService } from '../services/fcm.service';
 import { Badge } from '@ionic-native/badge/ngx';
 declare var $: any;
 
@@ -21,6 +20,17 @@ export class Tab1Page {
   public description: string;
   public restaurantLogo: string;
   public openStatus: string;
+  public restaurantSite;
+  public restaurantPhone;
+  public restaurantEmail;
+  public description1;
+  public description2;
+  public description3;
+  public facebook;
+  public instagram;
+  public twitter;
+  public hours;
+  public address;
 
   // Array variables
   public itemList: any;
@@ -60,12 +70,14 @@ export class Tab1Page {
     private toastCtrl: ToastController,
     public router: Router,
     public modalController: ModalController,
-    public fcmService: FcmService,
+    // public fcmService: FcmService,
+    private menu: MenuController,
     private badge: Badge,
     public storage: Storage) {
+      this.firebaseName = 'bellsSweetFactory';
       this.getRestaurants();
       this.checkDate();
-      this.fcmService.initPush();
+      this.getRestaurantData(this.firebaseName);      
   }
 
   ionViewWillEnter(){
@@ -75,7 +87,7 @@ export class Tab1Page {
       this.numberSaved = JSON.parse(localStorage.getItem('numberSaved'));
     }
     this.checkDate();
-    this.checkForRequiredInfo();
+    // this.checkForRestaurantInfo();
     this.restaurantLogo = localStorage.getItem('restaurantLogo');
 
   // Set default tab
@@ -103,6 +115,88 @@ export class Tab1Page {
 
   }
 
+  getRestaurantData(firebaseName) {
+    this.afd.object('restaurants/' + firebaseName + '/client_info')
+    .valueChanges().subscribe((res:any) => {
+      console.log(res);
+      localStorage.setItem('firebaseName',this.firebaseName);
+      // Set the main stuff
+      this.restaurantName = res.restaurantName;
+      localStorage.setItem('restaurantName', res.restaurantName);
+
+      this.restaurantLogo = res.restaurantLogo;
+      localStorage.setItem('restaurantLogo', res.restaurantLogo);
+
+      if (res.address){
+        this.address = res.address;
+        localStorage.setItem('address',res.address);
+      }
+
+      if (res.hours){
+        this.hours = res.hours;
+        localStorage.setItem('hours',res.hours);
+      }
+
+      // Check for website
+      if (res.site){
+        this.restaurantSite = res.site;
+        localStorage.setItem('restaurantSite', res.site);
+      }
+
+      // Check for phone
+      if (res.phone){
+        this.restaurantPhone = res.phone;
+        localStorage.setItem('restaurantPhone', res.phone);
+      }
+
+      // Check for email
+      if (res.email){
+        this.restaurantEmail = res.email;
+        localStorage.setItem('restaurantEmail', res.email);
+      }
+
+      // Check for 1st paragraph of description     
+      if (res.description1){
+        this.description1 = res.description1;
+        localStorage.setItem('description1', res.description1); 
+      }
+
+      // Check for 2nd paragraph of description     
+      if (res.description2){
+        this.description2 = res.description2;
+        localStorage.setItem('description2', res.description2);
+      }
+
+      // Check for 3rd paragraph of description
+      if(res.description3){
+        this.description3 = res.description3;
+        localStorage.setItem('description3', res.description3);
+      }
+
+      // Check for social links
+      if (res.facebook){
+        this.facebook = res.facebook;
+        localStorage.setItem('facebook', res.facebook);
+      }
+
+      if (res.instagram){
+        this.instagram = res.instagram;
+        localStorage.setItem('instagram', res.instagram);
+      }
+
+      if (res.twitter){
+        this.twitter = res.twitter;
+        localStorage.setItem('twitter', res.twitter);
+      }
+    });
+    return Promise.resolve();
+  }
+
+  openFirst() {
+    this.menu.enable(true, 'first');
+      this.menu.toggle('first');
+  }
+
   async toggleTextOptions(){
     console.log('toggleTextOptions')
     if (this.textToggle == true){
@@ -121,18 +215,27 @@ export class Tab1Page {
     }
   }
 
-  checkForRequiredInfo(){
-    if (!localStorage.getItem('firebaseName') || localStorage.getItem('firebaseName') == 'null'){
-      this.presentToast('Choose A Restaurant', 'A restaurant has to be chosen, let\'s try again.');
-      this.router.navigate(['/choose-restaurant']);
-    }else {
-      this.firebaseName = localStorage.getItem('firebaseName');
-    }
-  }
+  // checkForRestaurantInfo(){
+  //   if (!localStorage.getItem('firebaseName') || localStorage.getItem('firebaseName') == 'null'){
+  //     this.presentToast('Choose A Restaurant', 'A restaurant has to be chosen, let\'s try again.');
+  //     this.router.navigate(['/choose-restaurant']);
+  //     return false;
+  //   }else {
+  //     this.firebaseName = localStorage.getItem('firebaseName');
+  //   }
+  // }
 
   checkDate(){
     if (localStorage.getItem('date') && localStorage.getItem('date') !== this.getCurrentDate()){
-      console.log('dates mismatch')
+      console.log('dates mismatch');
+      // remove date
+      localStorage.removeItem('date');
+      // get current date
+      this.date = this.getCurrentDate();
+      // store date in storage
+      localStorage.setItem('date',this.date);
+
+      // remove myID, name, timeStamp, status, and time
       localStorage.removeItem('myID');
       this.myID = null;
       localStorage.removeItem('name');
@@ -141,8 +244,6 @@ export class Tab1Page {
       this.timeStamp = null;
       localStorage.removeItem('status');
       this.status = null;
-      localStorage.removeItem('date');
-      this.date = null;
       localStorage.removeItem('time');
       this.time = null;
     }
@@ -191,13 +292,13 @@ export class Tab1Page {
       });
     }
 
-  selectRestaurant() {
-    localStorage.setItem('pageRoute','/tabs/tab1');
-      this.router.navigate(['/choose-restaurant']);
-  }
+  // selectRestaurant() {
+  //   localStorage.setItem('pageRoute','/tabs/tab1');
+  //     this.router.navigate(['/choose-restaurant']);
+  // }
 
   getItems(date) {
-    this.firebaseName = localStorage.getItem('firebaseName');
+    // this.firebaseName = localStorage.getItem('firebaseName');
     // Pull items from Firebase to be displayed
     this.itemList = this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges();
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
@@ -359,7 +460,12 @@ export class Tab1Page {
   }
 
   addItem(name) {
-    this.checkForRequiredInfo();
+    // Check for required info
+    // if (this.checkForRestaurantInfo() == false){
+      // if anything fails, stop
+      // return;
+    // }
+    
     //  Remove storage items 
     let keysToRemove = ["name", "date","time","myID","status"];
     keysToRemove.forEach(k =>
@@ -373,7 +479,7 @@ export class Tab1Page {
     let newDate = new Date();
     this.timeStamp = newDate.getTime();
     localStorage.setItem('timeStamp', this.timeStamp);
-    this.firebaseName = localStorage.getItem('firebaseName');
+    // this.firebaseName = localStorage.getItem('firebaseName');
 
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
       .subscribe(data => {
@@ -406,7 +512,7 @@ export class Tab1Page {
       phone: this.phoneNumber
     }
     
-    this.afd.object('/users/customers/' + this.phoneNumber)
+    this.afd.object('/users/customers/' + this.firebaseName + '/' + this.phoneNumber)
     .update(userInfo);
 
     this.name = name;
