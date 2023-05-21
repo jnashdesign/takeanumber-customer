@@ -15,10 +15,10 @@
 </ion-card>
 </div>
 
-<a href="http://takeanumber.tech" target="_blank"><img class="appLogo" src="../../assets/takeANumber.png" end/></a>
+<img class="appLogo" src="{{restaurantLogo}}" end/>
 <ion-header class="topBar">
   <img class="selectRestaurantIcon" (click)="this.openFirst()" src="../../assets/hamburger-menu.svg" start />
-  <img class="restaurantLogo" src="{{restaurantLogo}}" end/>
+  <a href="http://takeanumber.tech" target="_blank"><img class="restaurantLogo" src="../../assets/takeANumber.png" end/></a>
 </ion-header>
 
 <ion-content padding [fullscreen]="true">
@@ -31,7 +31,7 @@
       <div class="milestone step5"></div>
       <div id="currentStatus" class="step1"></div>
     </div>
-    <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="ios">
+    <ion-segment centered color="primary" [(ngModel)]="tab" (ionChange)="segmentChanged($event)" mode="android">
       <ion-segment-button value="myNumber" checked>
         <ion-label>My Number</ion-label>
         <ion-icon name="duplicate"></ion-icon>

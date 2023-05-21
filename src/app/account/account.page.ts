@@ -3,6 +3,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 declare var $: any;
 
 
@@ -25,6 +26,7 @@ export class AccountPage implements OnInit {
   constructor(
     public afAuth: AngularFireAuth,
     public afd: AngularFireDatabase,
+    public storage: Storage,
     public toastCtrl: ToastController,
     public router: Router) { }
 
@@ -36,50 +38,51 @@ export class AccountPage implements OnInit {
     this.afAuth.auth.signOut();
   }
 
-  ionViewWillEnter(){
+  async ionViewWillEnter(){
     // Check for FirebaseUID
-    if (localStorage.getItem('firebaseUID')){
-      this.firebaseUID = localStorage.getItem('firebaseUID').replace(/['"]+/g, '');
-      localStorage.setItem('loggedIn','true');
+    if (this.storage.get('firebaseUID')){
+      this.firebaseUID = await this.storage.get('firebaseUID');
+      this.firebaseUID.replace(/['"]+/g, '');
+     await this.storage.set('loggedIn','true');
     }
     // Check for Phone Number
-    if (localStorage.getItem('phoneNumber')){
-      this.phone = localStorage.getItem('phoneNumber');
+    if (this.storage.get('phoneNumber')){
+      this.phone = await this.storage.get('phoneNumber');
       console.log(this.phone);
       $('#phoneInput').val(this.phone);
     }
     // Check for Email
-    if (localStorage.getItem('email')){
-      this.email = localStorage.getItem('email');
+    if (this.storage.get('email')){
+      this.email = await this.storage.get('email');
       console.log(this.email);
       $('#emailInput').val(this.email);
     }
     // Check for Name
-    if (localStorage.getItem('name')){
-      this.name = localStorage.getItem('name');
+    if (this.storage.get('name')){
+      this.name = await this.storage.get('name');
       console.log(this.name);
       $('#nameInput').val(this.name);
     }
     // Check for Opt In
-    if (localStorage.getItem('optInMessages') == 'true'){
+    if (await this.storage.get('optInMessages') == 'true'){
       this.optIn = true;
     }else{
       this.optIn = false;
-      localStorage.setItem('optInMessages','false');
+     await this.storage.set('optInMessages','false');
     }
     // Check for Restaurant Info
-    if (!localStorage.getItem('firebaseName')){
+    if (!this.storage.get('firebaseName')){
       this.router.navigate(['/choose-restaurant']);
     }else {
-      this.firebaseName = localStorage.getItem('firebaseName');
-      this.restaurantLogo = localStorage.getItem('restaurantLogo');
+      this.firebaseName = await this.storage.get('firebaseName');
+      this.restaurantLogo = await this.storage.get('restaurantLogo');
     }
     // Check for Loged In Status
-    if (localStorage.getItem('loggedIn') == 'true'){
+    if (await this.storage.get('loggedIn') == 'true'){
       this.loggedIn = true;
     }else{
       this.loggedIn = false;
-      localStorage.setItem('loggedIn','false');
+     await this.storage.set('loggedIn','false');
     }
   }
 
@@ -116,11 +119,11 @@ export class AccountPage implements OnInit {
     });
 
     // Update localStorage
-    localStorage.setItem('name', $('#nameInput').val());
+   await this.storage.set('name', $('#nameInput').val());
     this.name = $('#nameInput').val();
-    localStorage.setItem('email', $('#emailInput').val());
+   await this.storage.set('email', $('#emailInput').val());
     this.email = $('#emailInput').val();
-    localStorage.setItem('phoneNumber',$('#phoneInput').val());
+   await this.storage.set('phoneNumber',$('#phoneInput').val());
     this.phone = $('#phoneInput').val();
   }
 

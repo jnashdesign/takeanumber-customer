@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
@@ -17,15 +18,16 @@ export class Tab2Page {
   constructor(
     private menu: MenuController,
     public afd: AngularFireDatabase,
+    public storage: Storage,
     public router: Router) {
   }
 
-  ionViewWillEnter(){
-    // if (!localStorage.getItem('firebaseName')){
+  async ionViewWillEnter(){
+    // if (!this.storage.get('firebaseName')){
     //   this.router.navigate(['/choose-restaurant']);
     // }else {
-      this.firebaseName = localStorage.getItem('firebaseName');
-      this.restaurantLogo = localStorage.getItem('restaurantLogo');
+      this.firebaseName = await this.storage.get('firebaseName');
+      this.restaurantLogo = await this.storage.get('restaurantLogo');
     // }
 
     this.afd.object('restaurants/' + this.firebaseName + '/client_info')

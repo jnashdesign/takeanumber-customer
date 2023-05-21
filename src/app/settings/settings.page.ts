@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonSlides } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-settings',
@@ -38,7 +39,8 @@ export class SettingsPage implements OnInit {
   };
 
   constructor(
-    public router: Router) { 
+    public router: Router,
+    public storage: Storage) { 
     //Item object for Nature
     this.sliderOne =
     {
@@ -61,9 +63,9 @@ export class SettingsPage implements OnInit {
   ngOnInit() {
   }
 
-  dontShowAgainFunc(){
+  async dontShowAgainFunc(){
     if (this.dontShowAgain == true){
-      localStorage.setItem('dontShowAgain','true');
+     await this.storage.set('dontShowAgain','true');
     }
   }
 

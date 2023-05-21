@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
 
 declare var $: any;
 
@@ -32,6 +33,7 @@ export class ChooseRestaurantPage {
   constructor(
     public afd: AngularFireDatabase,
     public router: Router,
+    public storage: Storage,
     public toastCtrl: ToastController,
     public modalCtrl: ModalController) {
       this.getRestaurants();
@@ -39,8 +41,8 @@ export class ChooseRestaurantPage {
 
   ionViewDidEnter(){
     // setTimeout(function(){
-    //   if (localStorage.getItem('firebaseName')){
-    //     let firebaseName = localStorage.getItem('firebaseName');
+    //   if (this.storage.get('firebaseName')){
+    //     let firebaseName = await this.storage.get('firebaseName');
     //     $('#'+firebaseName).addClass('selected');
     //   }
     // }, 10)
@@ -53,19 +55,19 @@ export class ChooseRestaurantPage {
     });
   }
 
-  selectRestaurant(firebaseName, restaurantLogo) {
-    if (localStorage.getItem('firebaseName') && firebaseName !== localStorage.getItem('firebaseName')){
+  async selectRestaurant(firebaseName, restaurantLogo) {
+    if (this.storage.get('firebaseName') && firebaseName !== await this.storage.get('firebaseName')){
       this.areYouSure(firebaseName, restaurantLogo);
     }else{
       this.changeRestaurantInfo(firebaseName, restaurantLogo);
     }
   }
 
-  changeRestaurantInfo(firebaseName, restaurantLogo){
-    localStorage.setItem('firebaseName',firebaseName);
-    localStorage.setItem('restaurantLogo', restaurantLogo);
-    this.itemList = this.afd.list('/restaurants/' + localStorage.getItem('firebaseName') + '/' + localStorage.getItem('date') + '/').valueChanges();
-    this.getRestaurantData(localStorage.getItem('firebaseName')).then(() =>{
+  async changeRestaurantInfo(firebaseName, restaurantLogo){
+   await this.storage.set('firebaseName',firebaseName);
+   await this.storage.set('restaurantLogo', restaurantLogo);
+    this.itemList = this.afd.list('/restaurants/' + await this.storage.get('firebaseName') + '/' +await this.storage.get('date') + '/').valueChanges();
+    this.getRestaurantData(this.storage.get('firebaseName')).then(() =>{
         this.router.navigate(['/tabs/tab3']);
     });
   }
@@ -80,7 +82,7 @@ export class ChooseRestaurantPage {
         {
           text: 'Yes',
           handler: () => {
-            if (localStorage.getItem('myID')){
+            if (this.storage.get('myID')){
               this.markCancelled();
             }
             this.changeRestaurantInfo(firebaseName, restaurantLogo);
@@ -102,7 +104,7 @@ export class ChooseRestaurantPage {
   }
 
   dismiss(){
-    if (!localStorage.getItem('firebaseName')){
+    if (!this.storage.get('firebaseName')){
       this.youMustPickARestaurant();
     }else{
       this.router.navigate(['/tabs/tab1']);
@@ -133,91 +135,91 @@ export class ChooseRestaurantPage {
 
   getRestaurantData(firebaseName) {
     this.afd.object('restaurants/' + firebaseName + '/client_info')
-    .valueChanges().subscribe((res:any) => {
+    .valueChanges().subscribe(async (res:any) => {
       console.log(res);
       // Set the main stuff
       this.restaurantName = res.restaurantName;
-      localStorage.setItem('restaurantName', res.restaurantName);
+     await this.storage.set('restaurantName', res.restaurantName);
 
       this.restaurantLogo = res.restaurantLogo;
-      localStorage.setItem('restaurantLogo', res.restaurantLogo);
+     await this.storage.set('restaurantLogo', res.restaurantLogo);
 
       if (res.address){
         this.address = res.address;
-        localStorage.setItem('address',res.address);
+       await this.storage.set('address',res.address);
       }
 
       if (res.hours){
         this.hours = res.hours;
-        localStorage.setItem('hours',res.hours);
+       await this.storage.set('hours',res.hours);
       }
 
       // Check for website
       if (res.site){
         this.restaurantSite = res.site;
-        localStorage.setItem('restaurantSite', res.site);
+       await this.storage.set('restaurantSite', res.site);
       }
 
       // Check for phone
       if (res.phone){
         this.restaurantPhone = res.phone;
-        localStorage.setItem('restaurantPhone', res.phone);
+       await this.storage.set('restaurantPhone', res.phone);
       }
 
       // Check for email
       if (res.email){
         this.restaurantEmail = res.email;
-        localStorage.setItem('restaurantEmail', res.email);
+       await this.storage.set('restaurantEmail', res.email);
       }
 
       // Check for 1st paragraph of description     
       if (res.description1){
         this.description1 = res.description1;
-        localStorage.setItem('description1', res.description1); 
+       await this.storage.set('description1', res.description1); 
       }
 
       // Check for 2nd paragraph of description     
       if (res.description2){
         this.description2 = res.description2;
-        localStorage.setItem('description2', res.description2);
+       await this.storage.set('description2', res.description2);
       }
 
       // Check for 3rd paragraph of description
       if(res.description3){
         this.description3 = res.description3;
-        localStorage.setItem('description3', res.description3);
+       await this.storage.set('description3', res.description3);
       }
 
       // Check for social links
       if (res.facebook){
         this.facebook = res.facebook;
-        localStorage.setItem('facebook', res.facebook);
+       await this.storage.set('facebook', res.facebook);
       }
 
       if (res.instagram){
         this.instagram = res.instagram;
-        localStorage.setItem('instagram', res.instagram);
+       await this.storage.set('instagram', res.instagram);
       }
 
       if (res.twitter){
         this.twitter = res.twitter;
-        localStorage.setItem('twitter', res.twitter);
+       await this.storage.set('twitter', res.twitter);
       }
     });
     return Promise.resolve();
   }
 
-  markCancelled() {
-    this.afd.object('/restaurants/' + localStorage.getItem('firebaseName') + '/' + localStorage.getItem('date') + '/' + localStorage.getItem('timeStamp') + '_' + localStorage.getItem('name'))
+  async markCancelled() {
+    this.afd.object('/restaurants/' + await this.storage.get('firebaseName') + '/' + await this.storage.get('date') + '/' + await this.storage.get('timeStamp') + '_' + await this.storage.get('name'))
       .update({
         status: 'cancelled'
       });
-      localStorage.removeItem('myID');
-      localStorage.removeItem('name');
-      localStorage.removeItem('timeStamp');
-      localStorage.removeItem('date');
-      localStorage.removeItem('time');
-      localStorage.setItem('status','start');
+     await this.storage.remove('myID');
+     await this.storage.remove('name');
+     await this.storage.remove('timeStamp');
+     await this.storage.remove('date');
+     await this.storage.remove('time');
+     await this.storage.set('status','start');
   }
 
 }

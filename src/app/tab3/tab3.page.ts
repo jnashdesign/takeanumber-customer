@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Platform, MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
 declare var $: any;
 
 @Component({
@@ -32,23 +33,24 @@ export class Tab3Page {
     public afd: AngularFireDatabase,
     public router: Router,
     private menu: MenuController,
+    private storage: Storage,
     public plt: Platform) {
       this.plt.ready().then(() => {
               this.setData();
       });
     }
 
-    ionViewWillEnter(){
-      // if (!localStorage.getItem('firebaseName')){
+    async ionViewWillEnter(){
+      // if (!this.storage.get('firebaseName')){
       //   this.router.navigate(['/choose-restaurant']);
       // }else {
-        this.firebaseName = localStorage.getItem('firebaseName');
+        this.firebaseName = await this.storage.get('firebaseName');
       // }
       setTimeout(() => {
         this.setData();
        }, 500);
 
-       if (localStorage.getItem('status')){
+       if (this.storage.get('status')){
         $('ion-button.checkStatus').text('Check Order Status')
        }else{
         $('ion-button.checkStatus').text('Get A Number')
@@ -63,7 +65,7 @@ export class Tab3Page {
 
     getRestaurantData(){
       this.afd.object('restaurants/' + this.firebaseName + '/client_info')
-      .valueChanges().subscribe((res:any) => {
+      .valueChanges().subscribe(async (res:any) => {
         if (res.openStatus){
           this.openStatus = res.openStatus;
           if (this.openStatus == 'open'){
@@ -80,122 +82,122 @@ export class Tab3Page {
         }
         if (res.address){
           this.address = res.address;
-          localStorage.setItem('address',res.address);
+         await this.storage.set('address',res.address);
         }
   
         if (res.hours){
           this.hours = res.hours;
-          localStorage.setItem('hours',res.hours);
+         await this.storage.set('hours',res.hours);
         }
   
         // Check for website
         if (res.site){
           this.restaurantSite = res.site;
-          localStorage.setItem('restaurantSite', res.site);
+         await this.storage.set('restaurantSite', res.site);
         }
   
         // Check for phone
         if (res.phone){
           this.restaurantPhone = res.phone;
-          localStorage.setItem('restaurantPhone', res.phone);
+         await this.storage.set('restaurantPhone', res.phone);
         }
   
         // Check for email
         if (res.email){
           this.restaurantEmail = res.email;
-          localStorage.setItem('restaurantEmail', res.email);
+         await this.storage.set('restaurantEmail', res.email);
         }
   
         // Check for 1st paragraph of description     
         if (res.description1){
           this.description1 = res.description1;
-          localStorage.setItem('description1', res.description1); 
+         await this.storage.set('description1', res.description1); 
         }
   
         // Check for 2nd paragraph of description     
         if (res.description2){
           this.description2 = res.description2;
-          localStorage.setItem('description2', res.description2);
+         await this.storage.set('description2', res.description2);
         }
   
         // Check for 3rd paragraph of description
         if(res.description3){
           this.description3 = res.description3;
-          localStorage.setItem('description3', res.description3);
+         await this.storage.set('description3', res.description3);
         }
   
         // Check for social links
         if (res.facebook){
           this.facebook = res.facebook;
-          localStorage.setItem('facebook', res.facebook);
+         await this.storage.set('facebook', res.facebook);
         }
   
         if (res.instagram){
           this.instagram = res.instagram;
-          localStorage.setItem('instagram', res.instagram);
+         await this.storage.set('instagram', res.instagram);
         }
   
         if (res.twitter){
           this.twitter = res.twitter;
-          localStorage.setItem('twitter', res.twitter);
+         await this.storage.set('twitter', res.twitter);
         }  
       });
     }
 
 
-    setData(){
+    async setData(){
       console.log('setDataRan');
       // Set the main stuff
-      this.restaurantName = localStorage.getItem('restaurantName');
-      this.restaurantLogo = localStorage.getItem('restaurantLogo');
+      this.restaurantName = await this.storage.get('restaurantName');
+      this.restaurantLogo = await this.storage.get('restaurantLogo');
 
       // Check for address
-      if (localStorage.getItem('address')){
-        this.address = localStorage.getItem('address');
+      if (this.storage.get('address')){
+        this.address = await this.storage.get('address');
       }
 
       // Check for hours
-      if (localStorage.getItem('hours')){
-        this.hours = localStorage.getItem('hours');
+      if (this.storage.get('hours')){
+        this.hours = await this.storage.get('hours');
       }
 
       // Check for website
-      if (localStorage.getItem('restaurantSite')){
-        this.restaurantSite = localStorage.getItem('restaurantSite');
+      if (this.storage.get('restaurantSite')){
+        this.restaurantSite = await this.storage.get('restaurantSite');
       }
 
       // Check for phone
-      if (localStorage.getItem('restaurantPhone')){
-        this.restaurantPhone = localStorage.getItem('restaurantPhone');
+      if (this.storage.get('restaurantPhone')){
+        this.restaurantPhone = await this.storage.get('restaurantPhone');
       }
 
       // Check for email
-      if (localStorage.getItem('restaurantEmail')){
-        this.restaurantEmail  = localStorage.getItem('restaurantEmail');
+      if (this.storage.get('restaurantEmail')){
+        this.restaurantEmail  = await this.storage.get('restaurantEmail');
       }
 
       // Check for 1st paragraph of description     
-      if (localStorage.getItem('description1')){
-        this.description1 = localStorage.getItem('description1'); 
+      if (this.storage.get('description1')){
+        this.description1 = await this.storage.get('description1'); 
       }
       // Check for 2nd paragraph of description     
-      if (localStorage.getItem('description2')){
-        this.description2 = localStorage.getItem('description2');  
+      if (this.storage.get('description2')){
+        this.description2 = await this.storage.get('description2');  
       }
       // Check for 3rd paragraph of description
-      if(localStorage.getItem('description3')){
-        this.description3 = localStorage.getItem('description3');  
+      if(this.storage.get('description3')){
+        this.description3 = await this.storage.get('description3');  
       }
 
       // Check for social links
-      if (localStorage.getItem('facebook')){
-        this.facebook = localStorage.getItem('facebook');
+      if (this.storage.get('facebook')){
+        this.facebook = await this.storage.get('facebook');
       }
-      if (localStorage.getItem('instagram')){
-        this.instagram = localStorage.getItem('instagram');
+      if (this.storage.get('instagram')){
+        this.instagram = await this.storage.get('instagram');
       }
-      if (localStorage.getItem('twitter')){
-        this.twitter = localStorage.getItem('twitter');
+      if (this.storage.get('twitter')){
+        this.twitter = await this.storage.get('twitter');
       }
     }
 }

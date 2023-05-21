@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 import {
   Plugins,
@@ -16,7 +17,9 @@ const { PushNotifications } = Plugins;
 })
 
 export class FcmService { 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    public storage: Storage) { }
 
   public initPush() {
     console.log('initPush');
@@ -37,8 +40,8 @@ export class FcmService {
  
     PushNotifications.addListener(
       'registration',
-      (token: PushNotificationToken) => {
-        localStorage.setItem('pushToken', JSON.stringify(token.value));
+      async (token: PushNotificationToken) => {
+       await this.storage.set('pushToken', JSON.stringify(token.value));
         console.log('My token: ' + JSON.stringify(token));
       }
     );

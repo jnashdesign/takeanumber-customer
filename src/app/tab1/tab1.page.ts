@@ -4,8 +4,6 @@ import { ModalController, ToastController, MenuController } from '@ionic/angular
 import { Tab2Page } from '../tab2/tab2.page';
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
-// import { FcmService } from '../services/fcm.service';
-import { Badge } from '@ionic-native/badge/ngx';
 declare var $: any;
 
 @Component({
@@ -31,6 +29,7 @@ export class Tab1Page {
   public twitter;
   public hours;
   public address;
+  public acknowledged;
 
   // Array variables
   public itemList: any;
@@ -70,32 +69,56 @@ export class Tab1Page {
     private toastCtrl: ToastController,
     public router: Router,
     public modalController: ModalController,
-    // public fcmService: FcmService,
     private menu: MenuController,
-    private badge: Badge,
     public storage: Storage) {
-      this.firebaseName = 'bellsSweetFactory';
-      this.getRestaurants();
-      this.checkDate();
+      // this.firebaseName = 'bellsSweetFactory';
+      this.firebaseName = 'TheeKitchenBeast';
+      this.date = this.getCurrentDate();
+
       this.getRestaurantData(this.firebaseName);      
   }
 
-  ionViewWillEnter(){
-    this.checkIfUpdated();
+  async ionViewWillEnter(){
+    // await this.storage.set('date','5-4-2023');
+    // let orderDate = await this.storage.get('date');
+    // console.log('orderDate');
+    // console.log(orderDate);
+    // console.log(this.date);
 
-    if (localStorage.getItem('numberSaved')){
-      this.numberSaved = JSON.parse(localStorage.getItem('numberSaved'));
-    }
-    this.checkDate();
-    // this.checkForRestaurantInfo();
-    this.restaurantLogo = localStorage.getItem('restaurantLogo');
+    // console.log(this.time)
+    // if (this.date !== orderDate){
+    //   this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + name)
+    //   .update({
+    //     status: 'completed'
+    //   });
+    //   this.myID = null;
+    //   await this.storage.remove('myID');
+    //   this.status = 'start';
+    //   await this.storage.remove('status');
+    //   this.date = null;
+    //   await this.storage.remove('date');
+    //   this.timeStamp = null;
+    //   await this.storage.remove('timeStamp');
+    //   this.time = null;
+    //   await this.storage.remove('time');
+    //   this.tab = 'myNumber';
+    // }else{
+      this.timeStamp = await this.storage.get('timeStamp');
+      this.myID = await this.storage.get('myID');
+      this.time = await this.storage.get('time');  
+    // }
 
+    // Assign today's date
+    this.date = this.getCurrentDate();
+    
   // Set default tab
   this.tab = 'myNumber';
 
+  let myPhoneNumber = await this.storage.get('phoneNumber')
+  console.log(myPhoneNumber)
   // Set phone number if in localStorage
-  if (localStorage.getItem('phoneNumber')){
-    this.phoneNumber = localStorage.getItem('phoneNumber')
+  if (myPhoneNumber){
+    this.phoneNumber = myPhoneNumber
   }else{
     this.phoneNumber = null;
   }
@@ -104,10 +127,8 @@ export class Tab1Page {
   this.getItems(this.getCurrentDate());
 
   // Get localStorage Info
-  this.getLocalStorageInfo();
-  this.badge.clear();
-    if (localStorage.getItem('name')){
-      let nameInput = localStorage.getItem('name');
+    if (this.storage.get('name')){
+      let nameInput = await this.storage.get('name');
       $('#nameInput').val(nameInput);
     }
 
@@ -117,76 +138,76 @@ export class Tab1Page {
 
   getRestaurantData(firebaseName) {
     this.afd.object('restaurants/' + firebaseName + '/client_info')
-    .valueChanges().subscribe((res:any) => {
+    .valueChanges().subscribe(async (res:any) => {
       console.log(res);
-      localStorage.setItem('firebaseName',this.firebaseName);
+     await this.storage.set('firebaseName',this.firebaseName);
       // Set the main stuff
       this.restaurantName = res.restaurantName;
-      localStorage.setItem('restaurantName', res.restaurantName);
+     await this.storage.set('restaurantName', res.restaurantName);
 
       this.restaurantLogo = res.restaurantLogo;
-      localStorage.setItem('restaurantLogo', res.restaurantLogo);
+     await this.storage.set('restaurantLogo', res.restaurantLogo);
 
       if (res.address){
         this.address = res.address;
-        localStorage.setItem('address',res.address);
+       await this.storage.set('address',res.address);
       }
 
       if (res.hours){
         this.hours = res.hours;
-        localStorage.setItem('hours',res.hours);
+       await this.storage.set('hours',res.hours);
       }
 
       // Check for website
       if (res.site){
         this.restaurantSite = res.site;
-        localStorage.setItem('restaurantSite', res.site);
+       await this.storage.set('restaurantSite', res.site);
       }
 
       // Check for phone
       if (res.phone){
         this.restaurantPhone = res.phone;
-        localStorage.setItem('restaurantPhone', res.phone);
+       await this.storage.set('restaurantPhone', res.phone);
       }
 
       // Check for email
       if (res.email){
         this.restaurantEmail = res.email;
-        localStorage.setItem('restaurantEmail', res.email);
+       await this.storage.set('restaurantEmail', res.email);
       }
 
       // Check for 1st paragraph of description     
       if (res.description1){
         this.description1 = res.description1;
-        localStorage.setItem('description1', res.description1); 
+       await this.storage.set('description1', res.description1); 
       }
 
       // Check for 2nd paragraph of description     
       if (res.description2){
         this.description2 = res.description2;
-        localStorage.setItem('description2', res.description2);
+       await this.storage.set('description2', res.description2);
       }
 
       // Check for 3rd paragraph of description
       if(res.description3){
         this.description3 = res.description3;
-        localStorage.setItem('description3', res.description3);
+       await this.storage.set('description3', res.description3);
       }
 
       // Check for social links
       if (res.facebook){
         this.facebook = res.facebook;
-        localStorage.setItem('facebook', res.facebook);
+       await this.storage.set('facebook', res.facebook);
       }
 
       if (res.instagram){
         this.instagram = res.instagram;
-        localStorage.setItem('instagram', res.instagram);
+       await this.storage.set('instagram', res.instagram);
       }
 
       if (res.twitter){
         this.twitter = res.twitter;
-        localStorage.setItem('twitter', res.twitter);
+       await this.storage.set('twitter', res.twitter);
       }
     });
     return Promise.resolve();
@@ -206,67 +227,21 @@ export class Tab1Page {
     }
   }
 
-  checkIfUpdated(){
-    if (localStorage.getItem('lastUpdate') !== '12132020'){
-      localStorage.clear();
-      localStorage.setItem('lastUpdate','12132020');
-    }else{
-      return;
-    }
-  }
-
-  // checkForRestaurantInfo(){
-  //   if (!localStorage.getItem('firebaseName') || localStorage.getItem('firebaseName') == 'null'){
-  //     this.presentToast('Choose A Restaurant', 'A restaurant has to be chosen, let\'s try again.');
-  //     this.router.navigate(['/choose-restaurant']);
-  //     return false;
-  //   }else {
-  //     this.firebaseName = localStorage.getItem('firebaseName');
+  // checkIfUpdated(){
+  //   if (this.storage.get('lastUpdate') !== '12132020'){
+  //     localStorage.clear();
+  //    await this.storage.set('lastUpdate','12132020');
+  //   }else{
+  //     return;
   //   }
   // }
 
-  checkDate(){
-    if (localStorage.getItem('date') && localStorage.getItem('date') !== this.getCurrentDate()){
-      console.log('dates mismatch');
-      // remove date
-      localStorage.removeItem('date');
-      // get current date
-      this.date = this.getCurrentDate();
-      // store date in storage
-      localStorage.setItem('date',this.date);
-
-      // remove myID, name, timeStamp, status, and time
-      localStorage.removeItem('myID');
-      this.myID = null;
-      localStorage.removeItem('name');
-      this.name = null;
-      localStorage.removeItem('timeStamp');
-      this.timeStamp = null;
-      localStorage.removeItem('status');
-      this.status = null;
-      localStorage.removeItem('time');
-      this.time = null;
-    }
-  }
 
   setData(firebaseName){
     this.afd.object('restaurants/' + firebaseName + '/client_info')
     .valueChanges().subscribe((res:any) => {
       if (res.openStatus){
         this.openStatus = res.openStatus;
-        // this.openStatus = 'open';
-        if (this.openStatus == 'open'){
-          localStorage.setItem('openStatus','Open');
-        }else if (this.openStatus == 'closed'){
-          localStorage.setItem('openStatus','Closed');
-        }else if (this.openStatus == 'notTakingOrders'){
-          localStorage.setItem('openStatus','Not Taking Orders');
-        }else if (this.openStatus == 'soldOut'){
-          localStorage.setItem('openStatus','Sold Out');
-        }else{
-          localStorage.setItem('openStatus','Open');
-        }
-
       }
       if (res.restaurantLogo){
         this.restaurantLogo = res.restaurantLogo.replace(/['"]+/g, '');
@@ -284,35 +259,20 @@ export class Tab1Page {
     return date;
   }
 
-  getRestaurants(){
-    //  this.restaurants = this.afd.list('/restaurants/').valueChanges();
-     this.afd.list('/restaurants/').valueChanges()
-      .subscribe(data => {
-        this.restaurants = data;
-      });
-    }
-
-  // selectRestaurant() {
-  //   localStorage.setItem('pageRoute','/tabs/tab1');
-  //     this.router.navigate(['/choose-restaurant']);
-  // }
-
   getItems(date) {
-    // this.firebaseName = localStorage.getItem('firebaseName');
     // Pull items from Firebase to be displayed
     this.itemList = this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges();
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
       .subscribe(data => {
-        this.numItems = data.length + 1;
+        console.log(data)
+        this.numItems = data.length;
       });
     this.getMyData();
 
-    this.getOrderData('start');
-    this.getOrderData('waiting');
-    this.getOrderData('ready');
-    this.getOrderData('on-hold');
-    this.getOrderData('in-progress');
-    this.getOrderData('complete');
+    let statuses = ['start','waiting','ready','on-hold','in-progress','complete'];
+    statuses.forEach(status => {
+      this.getOrderData(status);
+    });
   }
 
   getMyData(){
@@ -321,12 +281,9 @@ export class Tab1Page {
       .snapshotChanges().subscribe((res) => {
         let tempArray: any = [];
         res.forEach((e) => {
+          console.log('getMyData()');
           tempArray.push(e.payload.val());
-          if (!localStorage.getItem('timeStamp')){
-            return;
-          }else{
-            this.processArray(tempArray);
-        }
+          this.processArray(tempArray);
       });
     });
   }
@@ -334,47 +291,63 @@ export class Tab1Page {
   processArray(tempArray){
     console.log('processArray()');
     let myOrderStatus: any;
-    $(tempArray).each(function(i,res){
-      if (res.timeStamp == localStorage.getItem('timeStamp')){
-        localStorage.setItem('myID',res.id);
-        localStorage.setItem('date',res.date);
-        localStorage.setItem('name',res.name);
-        localStorage.setItem('status',res.status);
-        localStorage.setItem('time',res.time_gotNumber);
-        localStorage.setItem('timeStamp',res.timeStamp);
-        this.status = localStorage.getItem('status');
-
+    $(tempArray).each(async function(i,res){
+        this.myID = res.id.toString();
+        this.date = res.date;
+        this.name = res.name;
+        this.status = res.status;
+        this.time = res.time_gotNumber;
+        this.timeStamp = res.timeStamp;
+        this.status = res.status;
         myOrderStatus = res.status;
-      }
     });
     this.checkStatus(myOrderStatus);
   }
 
-  checkStatus(status){
+  async checkStatus(status){
     console.log('checkStatus()');
     if (status == 'start'){
-      localStorage.removeItem('acknowledged');
+      // update status in storage
+      await this.storage.set('status', status)
+      await this.storage.remove('acknowledged');
       $('#currentStatus').removeClass().addClass('step1');
+
     }else if (status == 'waiting'){
-      localStorage.removeItem('acknowledged');
+      // update status in storage
+      await this.storage.set('status', status)
+      await this.storage.remove('acknowledged');
       $('#currentStatus').removeClass().addClass('step2');
       this.tab = 'waiting';
+
     }else if (status == 'ready'){
+      // update status in storage
+      await this.storage.set('status', status)
       console.log('status is ready');
-      if (!localStorage.getItem('acknowledged')){
+      if (!this.storage.get('acknowledged')){
         $('.readyToOrderNotice').removeClass('hide');
       }
       $('#currentStatus').removeClass().addClass('step3');
+
     }else if (status == 'in-progress'){
-      localStorage.removeItem('acknowledged');
+      // update status in storage
+      await this.storage.set('status', status)
+      await this.storage.remove('acknowledged');
       $('#currentStatus').removeClass().addClass('step4');
+
     }else if (status == 'complete'){
+      // update status in storage
+      await this.storage.set('status', 'complete')
       $('#currentStatus').removeClass().addClass('step5');
-      if (!localStorage.getItem('acknowledged')){
-        $('.completeNotice').removeClass('hide');
-      }
+
+    }else if (status == 'cancelled'){
+      // update status in storage
+      await this.storage.set('status', 'start');
+      $('#currentStatus').removeClass().addClass('step1');
+
     }else if (this.status == 'on-hold'){
-      localStorage.removeItem('acknowledged');
+      // update status in storage
+      await this.storage.set('status', status)
+      await this.storage.remove('acknowledged');
       $('#currentStatus').removeClass().addClass('step2').addClass('on-hold');
     }
   }
@@ -384,35 +357,35 @@ export class Tab1Page {
     this.afd.list('/restaurants/' + this.firebaseName + '/' + this.getCurrentDate() + '/',
       ref => ref.orderByChild('status').equalTo(status))
       .snapshotChanges().subscribe((res) => {
-        let tempArray: any = [];
+        let orders: any = [];
         res.forEach((e) => {
-          tempArray.push(e.payload.val());
+          orders.push(e.payload.val());
       });
-      this.updateTotals(status, tempArray);
+      this.updateTotals(status, orders);
     });
   }
 
-  updateTotals(status, tempArray){
+  updateTotals(status, orders){
     if (status == 'start') {
-      this.startingCustomers = tempArray.length;
+      this.startingCustomers = orders.length;
     }
     if (status == 'waiting') {
-      this.waitingCustomers = tempArray.length;
+      this.waitingCustomers = orders.length;
     }
     if (status == 'ready') {
-      this.readyOrders = tempArray.length;
+      this.readyOrders = orders.length;
     }
     if (status == 'on-hold') {
-      this.onHoldOrders = tempArray.length;
+      this.onHoldOrders = orders.length;
     } 
     if (status == 'in-progress') {
-      this.inProgressOrders = tempArray.length;
+      this.inProgressOrders = orders.length;
     } 
     if (status == 'completed') {
-      this.completedOrders = tempArray.length;
+      this.completedOrders = orders.length;
     } 
     if (status == 'cancelled') {
-      this.cancelledOrders = tempArray.length;
+      this.cancelledOrders = orders.length;
     }
   }
 
@@ -435,7 +408,7 @@ export class Tab1Page {
     }
   }
 
-  validatePhoneNumber(name){
+  async validatePhoneNumber(name){
     let mobileFormat = /^[1-9]{1}[0-9]{9}$/;
     let currentValue = $('#phoneNumberInput').val();
     if(mobileFormat.test(currentValue) == false && currentValue != 10){
@@ -445,32 +418,24 @@ export class Tab1Page {
     } else{
         $('#phoneNumberInput').css('border-color','#2ad85b').removeClass('error');
         // Save phone number to storage
-        localStorage.setItem('phoneNumber',$('#phoneNumberInput').val());
+       await this.storage.set('phoneNumber',$('#phoneNumberInput').val());
         // Update opt in variable and storage reference
-        this.phoneNumber = localStorage.getItem('phoneNumber');
+        this.phoneNumber = await this.storage.get('phoneNumber');
         this.numberSaved = true;
-        localStorage.setItem('numberSaved','true');
+       await this.storage.set('numberSaved','true');
         if (this.agreeToTerms !== true){
           this.presentToast('Agree to Terms.', 'You have to agree to receive messages.');
         }else{
-          localStorage.setItem('agreeToTerms','true');
+         await this.storage.set('agreeToTerms','true');
+         await this.storage.set('name', name);
+         this.name = name;
           this.addItem(name);
         }
     }
   }
 
-  addItem(name) {
-    // Check for required info
-    // if (this.checkForRestaurantInfo() == false){
-      // if anything fails, stop
-      // return;
-    // }
-    
-    //  Remove storage items 
-    let keysToRemove = ["name", "date","time","myID","status"];
-    keysToRemove.forEach(k =>
-      localStorage.removeItem(k))
-
+  async addItem(name) {    
+    // Set date and time
     let date = this.getCurrentDate();
     let time = this.getTime();
 
@@ -478,19 +443,17 @@ export class Tab1Page {
     // to ensure they stay chronological
     let newDate = new Date();
     this.timeStamp = newDate.getTime();
-    localStorage.setItem('timeStamp', this.timeStamp);
-    // this.firebaseName = localStorage.getItem('firebaseName');
-
+    await this.storage.set('timeStamp', this.timeStamp);
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
       .subscribe(data => {
-        this.numItems = data.length + 1;
+        this.numItems = data.length;
       });
 
     let payload;
       if (this.numberSaved == true && this.agreeToTerms == true){
         payload = {
           date: date,
-          id: this.numItems,
+          id: this.numItems + 1,
           name: name,
           phone: this.phoneNumber,
           status: 'waiting',
@@ -515,20 +478,20 @@ export class Tab1Page {
     this.afd.object('/users/customers/' + this.firebaseName + '/' + this.phoneNumber)
     .update(userInfo);
 
-    this.name = name;
-    localStorage.setItem('name', this.name);
+    // this.name = name;
+    // await this.storage.set('name', this.name);
 
     this.date = date;
-    localStorage.setItem('date', this.date);
+    await this.storage.set('date', this.date);
 
     this.time = time;
-    localStorage.setItem('time', this.time);
+    await this.storage.set('time', this.time);
 
     this.myID = this.numItems;
-    localStorage.setItem('myID', this.myID);
+    await this.storage.set('myID', this.myID);
 
     this.status = 'waiting';
-    localStorage.setItem('status',this.status);
+    await this.storage.set('status',this.status);
 
     // Disable creation button to prevent duplicates
     $('.reseveASpotBtn').attr('disabled', true);
@@ -584,31 +547,32 @@ export class Tab1Page {
     return time;  
   }
 
-  markCancelled() {
-    this.date = localStorage.getItem('date');
-    this.name = localStorage.getItem('name');
-    this.timeStamp = localStorage.getItem('timeStamp');
-    this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + this.name)
+  async markCancelled(name) {
+    this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + name)
       .update({
         status: 'cancelled'
       });
-    this.status = 'cancelled';
+
     $('#currentStatus').removeClass().addClass('step1');
+    await this.storage.remove('myID');
 
-    this.myID = null;
     this.status = 'start';
-    this.date = null;
-    this.timeStamp = null;
-    this.time = null;
+    await this.storage.set('status', 'start');
 
-    localStorage.removeItem('myID');
-    localStorage.removeItem('status');
-    localStorage.removeItem('date');
-    localStorage.removeItem('timeStamp');
-    localStorage.removeItem('time');
-  }
+    this.date = null;
+    await this.storage.remove('date');
+
+    this.timeStamp = null;
+    await this.storage.remove('timeStamp');
+
+    this.time = null;
+    await this.storage.remove('time');
+
+    this.tab = 'myNumber';
+}
 
   async areYouSure() {
+    const name = await this.storage.get('name');
     // Create the popup
     const toast = await this.toastCtrl.create({
       header: 'Are you sure you want to cancel?',
@@ -618,7 +582,7 @@ export class Tab1Page {
         {
           text: 'Yes',
           handler: () => {
-            this.markCancelled();
+            this.markCancelled(name);
           }
         },
         {
@@ -635,23 +599,25 @@ export class Tab1Page {
     toast.present();
   }
 
-  getNewNumber(){
+  async getNewNumber(){
     $('#currentStatus').removeClass().addClass('step1');
-    this.myID = null;
-    this.status = 'start';
-    this.date = null;
-    this.timeStamp = null;
-    this.time = null;
+    await this.storage.remove('myID');
 
-    localStorage.removeItem('myID');
-    localStorage.removeItem('status');
-    localStorage.removeItem('date');
-    localStorage.removeItem('timeStamp');
-    localStorage.removeItem('time');
-  }
+    this.status = 'start';
+    await this.storage.set('status', 'start');
+
+    this.date = null;
+    await this.storage.remove('date');
+
+    this.timeStamp = null;
+    await this.storage.remove('timeStamp');
+
+    this.time = null;
+    await this.storage.remove('time');
+}
 
   async presentModal() {
-    if (localStorage.getItem('acknowledged') == 'true'){
+    if (await this.storage.get('acknowledged') == 'true'){
       // No modal necessary
     }else{
       const modal = await this.modalController.create({
@@ -661,28 +627,39 @@ export class Tab1Page {
     }
   }
 
-  segmentChanged(e) {
+  async segmentChanged(e) {
     console.log(e.detail.value);
+    let status = await this.storage.get('status');
+
     if (e.detail.value == 'myNumber'){
-      this.getLocalStorageInfo();
+      if (status == 'complete'){
+        this.storage.set('status', 'start');
+        this.timeStamp = null;
+        await this.storage.remove('timeStamp');
+        this.time = null;
+        await this.storage.remove('time');
+        this.myID = null;
+        await this.storage.remove('myID');
+        $('#currentStatus').removeClass().addClass('step1');
+      }
     }
   }
 
-  getLocalStorageInfo(){
+  async getLocalStorageInfo(){
     // Collect the information from localStorage
-    this.myID = localStorage.getItem('myID');
-    this.time = localStorage.getItem('time');
-    this.name = localStorage.getItem('name');
-    this.timeStamp = localStorage.getItem('timeStamp')
-    this.status = localStorage.getItem('status');
-    this.date = localStorage.getItem('date');
-    if (localStorage.getItem('agreeToTerms')){
-      this.agreeToTerms = JSON.parse(localStorage.getItem('agreeToTerms'));
+    this.myID = await this.storage.get('myID');
+    this.time = await this.storage.get('time');
+    this.name = await this.storage.get('name');
+    this.timeStamp = await this.storage.get('timeStamp');
+    this.status = await this.storage.get('status');
+    this.date = await this.storage.get('date');
+    if (this.storage.get('agreeToTerms')){
+      this.agreeToTerms = JSON.parse(await this.storage.get('agreeToTerms'));
     }
   }
 
   dismiss(){
-    localStorage.setItem('acknowledged','true');
+    this.acknowledged = true;
     $('.readyToOrderNotice').addClass('hide');
     $('.completeNotice').addClass('hide');
   }
