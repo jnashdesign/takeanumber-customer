@@ -73,141 +73,143 @@ export class Tab1Page {
     public storage: Storage) {
       // this.firebaseName = 'bellsSweetFactory';
       this.firebaseName = 'TheeKitchenBeast';
+      this.getLocalStorageInfo();
       this.date = this.getCurrentDate();
-
       this.getRestaurantData(this.firebaseName);      
   }
 
   async ionViewWillEnter(){
-    // await this.storage.set('date','5-4-2023');
-    // let orderDate = await this.storage.get('date');
-    // console.log('orderDate');
-    // console.log(orderDate);
-    // console.log(this.date);
-
-    // console.log(this.time)
-    // if (this.date !== orderDate){
-    //   this.afd.object('/restaurants/' + this.firebaseName + '/' + this.date + '/' + this.timeStamp + '_' + name)
-    //   .update({
-    //     status: 'completed'
-    //   });
-    //   this.myID = null;
-    //   await this.storage.remove('myID');
-    //   this.status = 'start';
-    //   await this.storage.remove('status');
-    //   this.date = null;
-    //   await this.storage.remove('date');
-    //   this.timeStamp = null;
-    //   await this.storage.remove('timeStamp');
-    //   this.time = null;
-    //   await this.storage.remove('time');
-    //   this.tab = 'myNumber';
-    // }else{
-      this.timeStamp = await this.storage.get('timeStamp');
-      this.myID = await this.storage.get('myID');
-      this.time = await this.storage.get('time');  
-    // }
-
-    // Assign today's date
+    // Frst get today's date
     this.date = this.getCurrentDate();
-    
-  // Set default tab
-  this.tab = 'myNumber';
 
-  let myPhoneNumber = await this.storage.get('phoneNumber')
-  console.log(myPhoneNumber)
-  // Set phone number if in localStorage
-  if (myPhoneNumber){
-    this.phoneNumber = myPhoneNumber
-  }else{
-    this.phoneNumber = null;
-  }
+    // Then check to see if you have an order 
+    let orderDate = await this.storage.get('date');
+    // See if it's leftover from a previous day
+    if (orderDate){
+      this.checkIfOrderDateIsToday(orderDate)
+    }
+      
+    // Set default tab
+    this.tab = 'myNumber';
 
-  // Get the current date
-  this.getItems(this.getCurrentDate());
-
-  // Get localStorage Info
-    if (this.storage.get('name')){
-      let nameInput = await this.storage.get('name');
-      $('#nameInput').val(nameInput);
+    let myPhoneNumber = await this.storage.get('phoneNumber')
+    // Set phone number if in localStorage
+    if (myPhoneNumber){
+      this.phoneNumber = myPhoneNumber
+    }else{
+      this.phoneNumber = null;
     }
 
-    this.setData(this.firebaseName);
+    // Get the current date
+    this.getItems(this.getCurrentDate());
 
+    // Get localStorage Info
+      if (this.storage.get('name')){
+        let nameInput = await this.storage.get('name');
+        $('#nameInput').val(nameInput);
+      }
+
+      this.setData(this.firebaseName);
+  }
+
+  async checkIfOrderDateIsToday(orderDate){
+    this.timeStamp = await this.storage.get('timeStamp');
+    this.myID = await this.storage.get('myID');
+    this.time = await this.storage.get('time');
+    let name = await this.storage.get('name');  
+
+    if (orderDate && this.date !== orderDate){
+      this.afd.object('/restaurants/' + this.firebaseName + '/' + orderDate + '/' + this.timeStamp + '_' + name)
+      .update({
+        status: 'completed'
+      });
+      this.myID = null;
+      await this.storage.remove('myID');
+      this.status = 'start';
+      await this.storage.set('status','start');
+      this.date = null;
+      await this.storage.remove('date');
+      this.timeStamp = null;
+      await this.storage.remove('timeStamp');
+      this.time = null;
+      await this.storage.remove('time');
+      this.phoneNumber = null;
+      await this.storage.remove('phoneNumber')
+      this.tab = 'myNumber';
+    }
   }
 
   getRestaurantData(firebaseName) {
     this.afd.object('restaurants/' + firebaseName + '/client_info')
     .valueChanges().subscribe(async (res:any) => {
-      console.log(res);
      await this.storage.set('firebaseName',this.firebaseName);
       // Set the main stuff
-      this.restaurantName = res.restaurantName;
-     await this.storage.set('restaurantName', res.restaurantName);
+      this.restaurantName = res?.restaurantName;
+     await this.storage.set('restaurantName', res?.restaurantName);
 
-      this.restaurantLogo = res.restaurantLogo;
-     await this.storage.set('restaurantLogo', res.restaurantLogo);
+      this.restaurantLogo = res?.restaurantLogo;
+     await this.storage.set('restaurantLogo', res?.restaurantLogo);
 
-      if (res.address){
-        this.address = res.address;
-       await this.storage.set('address',res.address);
+      if (res?.address){
+        this.address = res?.address;
+       await this.storage.set('address',res?.address);
       }
 
-      if (res.hours){
-        this.hours = res.hours;
-       await this.storage.set('hours',res.hours);
+      if (res?.hours){
+        this.hours = res?.hours;
+       await this.storage.set('hours',res?.hours);
       }
 
       // Check for website
-      if (res.site){
-        this.restaurantSite = res.site;
-       await this.storage.set('restaurantSite', res.site);
+      if (res?.site){
+        this.restaurantSite = res?.site;
+       await this.storage.set('restaurantSite', res?.site);
       }
 
       // Check for phone
-      if (res.phone){
-        this.restaurantPhone = res.phone;
-       await this.storage.set('restaurantPhone', res.phone);
+      if (res?.phone){
+        this.restaurantPhone = res?.phone;
+       await this.storage.set('restaurantPhone', res?.phone);
       }
 
       // Check for email
-      if (res.email){
-        this.restaurantEmail = res.email;
-       await this.storage.set('restaurantEmail', res.email);
+      if (res?.email){
+        this.restaurantEmail = res?.email;
+       await this.storage.set('restaurantEmail', res?.email);
       }
 
       // Check for 1st paragraph of description     
-      if (res.description1){
-        this.description1 = res.description1;
-       await this.storage.set('description1', res.description1); 
+      if (res?.description1){
+        this.description1 = res?.description1;
+       await this.storage.set('description1', res?.description1); 
       }
 
       // Check for 2nd paragraph of description     
-      if (res.description2){
-        this.description2 = res.description2;
-       await this.storage.set('description2', res.description2);
+      if (res?.description2){
+        this.description2 = res?.description2;
+       await this.storage.set('description2', res?.description2);
       }
 
       // Check for 3rd paragraph of description
-      if(res.description3){
-        this.description3 = res.description3;
-       await this.storage.set('description3', res.description3);
+      if(res?.description3){
+        this.description3 = res?.description3;
+       await this.storage.set('description3', res?.description3);
       }
 
       // Check for social links
-      if (res.facebook){
-        this.facebook = res.facebook;
-       await this.storage.set('facebook', res.facebook);
+      if (res?.facebook){
+        this.facebook = res?.facebook;
+       await this.storage.set('facebook', res?.facebook);
       }
 
-      if (res.instagram){
-        this.instagram = res.instagram;
-       await this.storage.set('instagram', res.instagram);
+      if (res?.instagram){
+        this.instagram = res?.instagram;
+       await this.storage.set('instagram', res?.instagram);
       }
 
-      if (res.twitter){
-        this.twitter = res.twitter;
-       await this.storage.set('twitter', res.twitter);
+      if (res?.twitter){
+        this.twitter = res?.twitter;
+       await this.storage.set('twitter', res?.twitter);
       }
     });
     return Promise.resolve();
@@ -219,7 +221,6 @@ export class Tab1Page {
   }
 
   async toggleTextOptions(){
-    console.log('toggleTextOptions')
     if (this.textToggle == true){
       this.textToggle = false;
     }else{
@@ -240,11 +241,11 @@ export class Tab1Page {
   setData(firebaseName){
     this.afd.object('restaurants/' + firebaseName + '/client_info')
     .valueChanges().subscribe((res:any) => {
-      if (res.openStatus){
-        this.openStatus = res.openStatus;
+      if (res?.openStatus){
+        this.openStatus = res?.openStatus;
       }
-      if (res.restaurantLogo){
-        this.restaurantLogo = res.restaurantLogo.replace(/['"]+/g, '');
+      if (res?.restaurantLogo){
+        this.restaurantLogo = res?.restaurantLogo.replace(/['"]+/g, '');
       }
     });
   }
@@ -264,7 +265,6 @@ export class Tab1Page {
     this.itemList = this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges();
     this.afd.list('/restaurants/' + this.firebaseName + '/' + date + '/').valueChanges()
       .subscribe(data => {
-        console.log(data)
         this.numItems = data.length;
       });
     this.getMyData();
@@ -280,32 +280,31 @@ export class Tab1Page {
     this.afd.list('/restaurants/' + this.firebaseName + '/' + this.getCurrentDate() + '/')
       .snapshotChanges().subscribe((res) => {
         let tempArray: any = [];
-        res.forEach((e) => {
-          console.log('getMyData()');
+        res?.forEach((e) => {
           tempArray.push(e.payload.val());
-          this.processArray(tempArray);
       });
+      this.processArray(tempArray);
     });
   }
 
   processArray(tempArray){
-    console.log('processArray()');
     let myOrderStatus: any;
-    $(tempArray).each(async function(i,res){
-        this.myID = res.id.toString();
-        this.date = res.date;
-        this.name = res.name;
-        this.status = res.status;
-        this.time = res.time_gotNumber;
-        this.timeStamp = res.timeStamp;
-        this.status = res.status;
-        myOrderStatus = res.status;
-    });
-    this.checkStatus(myOrderStatus);
+    if (this.myID){
+      let index = parseInt(this.myID) - 1;
+      myOrderStatus = tempArray[index].status;
+      this.myID = tempArray[index].id.toString();
+      this.date = tempArray[index].date;
+      this.name = tempArray[index].name;
+      this.status = tempArray[index].status;
+      this.time = tempArray[index].time_gotNumber;
+      this.timeStamp = tempArray[index].timeStamp;
+      this.status = tempArray[index].status;
+
+      this.updatetatus(myOrderStatus);
+    }
   }
 
-  async checkStatus(status){
-    console.log('checkStatus()');
+  async updatetatus(status){
     if (status == 'start'){
       // update status in storage
       await this.storage.set('status', status)
@@ -322,7 +321,6 @@ export class Tab1Page {
     }else if (status == 'ready'){
       // update status in storage
       await this.storage.set('status', status)
-      console.log('status is ready');
       if (!this.storage.get('acknowledged')){
         $('.readyToOrderNotice').removeClass('hide');
       }
@@ -358,7 +356,7 @@ export class Tab1Page {
       ref => ref.orderByChild('status').equalTo(status))
       .snapshotChanges().subscribe((res) => {
         let orders: any = [];
-        res.forEach((e) => {
+        res?.forEach((e) => {
           orders.push(e.payload.val());
       });
       this.updateTotals(status, orders);
@@ -399,7 +397,6 @@ export class Tab1Page {
     // Get customer name field input
     let name: string = $('#nameInput').val();
 
-    console.log(name);
     // Throw error if name is not provided.
     if (!name) {
       this.presentToast('Oops! Name is required.', 'We need a name to add to your number.');
@@ -628,7 +625,7 @@ export class Tab1Page {
   }
 
   async segmentChanged(e) {
-    console.log(e.detail.value);
+    // console.log(e.detail.value);
     let status = await this.storage.get('status');
 
     if (e.detail.value == 'myNumber'){
